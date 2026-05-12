@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { saveHotelBranding } from '@/actions/hotelBranding';
 import { getAllHotels } from '@/actions/getAllHotels';
+import { deleteHotel } from '@/actions/deleteHotel';
 import { translations, Language } from '@/lib/translations';
 
 export default function PitchEditor() {
@@ -159,22 +160,47 @@ export default function PitchEditor() {
                 ))}
               </select>
               
-              <button 
-                onClick={() => {
-                  setHotelName('');
-                  setHotelSlug('');
-                  setColor('#00d2d3');
-                  setFont('Inter');
-                  setLogoBase64('');
-                  setSavedLink('');
-                  setSavedSlug('');
-                  // Also reset the select dropdown visually if needed, but since it's uncontrolled we just rely on state.
-                  // Best would be to tie select value to a state, but this works to just reset form.
-                }}
-                className="w-full py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                {t.pitch_add_new}
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => {
+                    setHotelName('');
+                    setHotelSlug('');
+                    setColor('#00d2d3');
+                    setFont('Inter');
+                    setLogoBase64('');
+                    setSavedLink('');
+                    setSavedSlug('');
+                  }}
+                  className="w-full py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  {t.pitch_add_new}
+                </button>
+
+                {savedSlug && (
+                  <button 
+                    onClick={async () => {
+                      if (confirm('Weet je zeker dat je dit prototype wilt verwijderen?')) {
+                        const res = await deleteHotel(savedSlug);
+                        if (res.success) {
+                          setSavedPrototypes(prev => prev.filter(p => p.slug !== savedSlug));
+                          setHotelName('');
+                          setHotelSlug('');
+                          setColor('#00d2d3');
+                          setFont('Inter');
+                          setLogoBase64('');
+                          setSavedLink('');
+                          setSavedSlug('');
+                        } else {
+                          alert('Error: ' + res.message);
+                        }
+                      }
+                    }}
+                    className="w-full py-3 bg-red-100 text-red-600 border border-red-200 font-bold rounded-lg hover:bg-red-200 transition-colors"
+                  >
+                    {t.pitch_delete_prototype}
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

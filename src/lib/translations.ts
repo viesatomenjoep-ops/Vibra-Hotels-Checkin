@@ -49,7 +49,8 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_select_prototype: 'Selecteer Opgeslagen Prototype',
     pitch_choose_prototype: '-- Kies een prototype --',
     pitch_add_new: '+ Maak Nieuw Prototype',
-    pitch_export_api: 'Kopieer API Blueprint'
+    pitch_export_api: 'Kopieer API Blueprint',
+    pitch_delete_prototype: 'Verwijder Prototype'
   },
   en: {
     select_language: 'Select your language',
@@ -99,7 +100,8 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_select_prototype: 'Select Saved Prototype',
     pitch_choose_prototype: '-- Choose a prototype --',
     pitch_add_new: '+ Create New Prototype',
-    pitch_export_api: 'Copy API Blueprint'
+    pitch_export_api: 'Copy API Blueprint',
+    pitch_delete_prototype: 'Delete Prototype'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -149,7 +151,8 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_select_prototype: 'Seleccionar Prototipo Guardado',
     pitch_choose_prototype: '-- Elegir un prototipo --',
     pitch_add_new: '+ Crear Nuevo Prototipo',
-    pitch_export_api: 'Copiar API Blueprint'
+    pitch_export_api: 'Copiar API Blueprint',
+    pitch_delete_prototype: 'Eliminar Prototipo'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
