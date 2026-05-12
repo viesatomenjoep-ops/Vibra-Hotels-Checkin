@@ -34,6 +34,8 @@ export async function GET(
       );
     }
 
+    const origin = request.headers.get('origin') || new URL(request.url).origin;
+
     // Return the blueprint
     return NextResponse.json({
       success: true,
@@ -46,8 +48,8 @@ export async function GET(
           logo: data.logo_url
         },
         links: {
-          kiosk: `https://vibra-hotels-checkin.vercel.app/kiosk/${data.slug}`,
-          checkin: `https://vibra-hotels-checkin.vercel.app/check-in/${data.slug}`
+          kiosk: `${origin}/kiosk/${data.slug}`,
+          checkin: `${origin}/check-in/${data.slug}`
         }
       }
     });
