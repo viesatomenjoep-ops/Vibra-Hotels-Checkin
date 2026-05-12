@@ -48,14 +48,19 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
       const tesseract = await import('tesseract.js');
       const worker = await tesseract.createWorker('eng');
       
+      // Force Tesseract to only recognize MRZ characters (A-Z, 0-9, <)
+      // This eliminates 99% of OCR garbage like reading < as ( or { or c
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',
+      });
+      
       let foundValidData = false;
       let attempts = 0;
-      const MAX_ATTEMPTS = 30; // Max ~30 seconds of scanning
+      const MAX_ATTEMPTS = 40; // Max ~40 frames
 
       while (!foundValidData && attempts < MAX_ATTEMPTS && videoRef.current) {
         attempts++;
         
-        // Capture snapshot from video
         let idPhotoBase64 = '';
         const videoWidth = videoRef.current.videoWidth;
         const videoHeight = videoRef.current.videoHeight;
@@ -72,14 +77,15 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(videoRef.current, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-            ctx.filter = 'contrast(1.5) grayscale(1)';
+            // Stronger image preprocessing for OCR: high contrast, slight brightness boost
+            ctx.filter = 'contrast(2.0) brightness(1.1) grayscale(1)';
             ctx.drawImage(canvas, 0, 0);
-            idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
           }
         }
 
         if (!idPhotoBase64) {
-          await new Promise(r => setTimeout(r, 500));
+          await new Promise(r => setTimeout(r, 400));
           continue;
         }
 
