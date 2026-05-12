@@ -19,7 +19,32 @@ export default function PitchEditor() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoBase64(reader.result as string);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max breedte/hoogte voor logo (downscale voor Vercel payload limit)
+          const MAX_SIZE = 800;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress to PNG to preserve transparency
+          const compressedBase64 = canvas.toDataURL('image/png', 0.8);
+          setLogoBase64(compressedBase64);
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
