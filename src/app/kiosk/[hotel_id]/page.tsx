@@ -1,11 +1,13 @@
 'use client';
 
 import { QRCodeSVG } from 'qrcode.react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { translations, Language } from '@/lib/translations';
 import Link from 'next/link';
 
-export default function KioskPage({ params }: { params: { hotel_id: string } }) {
+export default function KioskPage({ params }: { params: Promise<{ hotel_id: string }> }) {
+  const resolvedParams = use(params);
+  const hotel_id = resolvedParams.hotel_id;
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState<Language>('en');
 
@@ -15,8 +17,8 @@ export default function KioskPage({ params }: { params: { hotel_id: string } }) 
     // Dynamically generate the URL based on the current domain
     const host = window.location.origin;
     // Pass the language query param so the phone opens in the selected language
-    setUrl(`${host}/check-in/${params.hotel_id}?lang=${language}`);
-  }, [params.hotel_id, language]);
+    setUrl(`${host}/check-in/${hotel_id}?lang=${language}`);
+  }, [hotel_id, language]);
 
   const languages = [
     { code: 'en', short: 'EN' },
@@ -56,7 +58,7 @@ export default function KioskPage({ params }: { params: { hotel_id: string } }) 
           
           <div className="mt-12 pt-8 border-t border-[#00d2d3]/10">
             <Link 
-              href={`/check-in/${params.hotel_id}?lang=${language}`}
+              href={`/check-in/${hotel_id}?lang=${language}`}
               className="inline-block bg-white text-[#00d2d3] border-2 border-[#00d2d3] hover:bg-[#00d2d3] hover:text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-sm"
             >
               {t.kiosk_manual_button}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, use } from 'react';
 import { processCheckin } from '@/actions/submitCheckin';
 import { CheckCircle, Globe, Eraser, Camera } from 'lucide-react';
 import { translations, Language } from '@/lib/translations';
@@ -11,7 +11,10 @@ import PassportScanner from '@/components/PassportScanner';
 const SignatureCanvas = dynamic(() => import('react-signature-canvas'), { ssr: false });
 const SigCanvas = SignatureCanvas as any;
 
-export default function CheckInPage({ params }: { params: { hotel_id: string } }) {
+export default function CheckInPage({ params }: { params: Promise<{ hotel_id: string }> }) {
+  const resolvedParams = use(params);
+  const hotel_id = resolvedParams.hotel_id;
+  
   const [step, setStep] = useState(0); // 0=Lang, 1=Scan, 2=Form, 4=Success
   const [language, setLanguage] = useState<Language>('en');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +52,7 @@ export default function CheckInPage({ params }: { params: { hotel_id: string } }
     }
 
     setIsSubmitting(true);
-    formData.append('hotelId', params.hotel_id);
+    formData.append('hotelId', hotel_id);
 
     // Get actual base64 signature
     const signatureBase64 = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
