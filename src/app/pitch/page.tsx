@@ -11,9 +11,9 @@ export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('');
   const [hotelSlug, setHotelSlug] = useState('');
   const [businessType, setBusinessType] = useState<'hotel' | 'scooter'>('hotel');
-  const [scooterFleet, setScooterFleet] = useState<Array<{id: string, name: string, price: string, cc: string}>>([
-    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35' },
-    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28' }
+  const [scooterFleet, setScooterFleet] = useState<Array<{id: string, name: string, price: string, cc: string, image: string}>>([
+    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35', image: '' },
+    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28', image: '' }
   ]);
   const [color, setColor] = useState('#00d2d3');
   const [font, setFont] = useState('Inter');
@@ -71,6 +71,42 @@ export default function PitchEditor() {
           // Compress to PNG to preserve transparency
           const compressedBase64 = canvas.toDataURL('image/png', 0.8);
           setLogoBase64(compressedBase64);
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleScooterImageUpload = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_SIZE = 600;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          const newFleet = [...scooterFleet];
+          newFleet[idx].image = compressedBase64;
+          setScooterFleet(newFleet);
         };
         img.src = reader.result as string;
       };
@@ -319,61 +355,76 @@ export default function PitchEditor() {
 
           {businessType === 'scooter' && (
             <div className="pt-4 border-t border-gray-100 mt-4">
-              <label className="block text-sm font-bold text-gray-700 mb-4">Scooter Vloot (Aanbod)</label>
-              <div className="space-y-3 mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-4">{t.pitch_scooter_fleet_title}</label>
+              <div className="space-y-4 mb-4">
                 {scooterFleet.map((scooter, idx) => (
-                  <div key={scooter.id} className="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
-                    <input 
-                      type="text" 
-                      value={scooter.name} 
-                      onChange={(e) => {
-                        const newFleet = [...scooterFleet];
-                        newFleet[idx].name = e.target.value;
-                        setScooterFleet(newFleet);
-                      }}
-                      className="flex-1 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
-                      placeholder="Scooter Naam"
-                    />
-                    <input 
-                      type="text" 
-                      value={scooter.cc} 
-                      onChange={(e) => {
-                        const newFleet = [...scooterFleet];
-                        newFleet[idx].cc = e.target.value;
-                        setScooterFleet(newFleet);
-                      }}
-                      className="w-20 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
-                      placeholder="CC"
-                    />
-                    <input 
-                      type="text" 
-                      value={scooter.price} 
-                      onChange={(e) => {
-                        const newFleet = [...scooterFleet];
-                        newFleet[idx].price = e.target.value;
-                        setScooterFleet(newFleet);
-                      }}
-                      className="w-20 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
-                      placeholder="Prijs/dag"
-                    />
-                    <button 
-                      onClick={() => {
-                        setScooterFleet(scooterFleet.filter(s => s.id !== scooter.id));
-                      }}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded"
-                    >
-                      ❌
-                    </button>
+                  <div key={scooter.id} className="flex flex-col gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="flex gap-2 items-center">
+                      <input 
+                        type="text" 
+                        value={scooter.name} 
+                        onChange={(e) => {
+                          const newFleet = [...scooterFleet];
+                          newFleet[idx].name = e.target.value;
+                          setScooterFleet(newFleet);
+                        }}
+                        className="flex-1 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                        placeholder={t.pitch_scooter_name_label}
+                      />
+                      <button 
+                        onClick={() => {
+                          setScooterFleet(scooterFleet.filter(s => s.id !== scooter.id));
+                        }}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded"
+                      >
+                        ❌
+                      </button>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <input 
+                        type="text" 
+                        value={scooter.cc} 
+                        onChange={(e) => {
+                          const newFleet = [...scooterFleet];
+                          newFleet[idx].cc = e.target.value;
+                          setScooterFleet(newFleet);
+                        }}
+                        className="w-1/3 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                        placeholder={t.pitch_scooter_cc_label}
+                      />
+                      <input 
+                        type="text" 
+                        value={scooter.price} 
+                        onChange={(e) => {
+                          const newFleet = [...scooterFleet];
+                          newFleet[idx].price = e.target.value;
+                          setScooterFleet(newFleet);
+                        }}
+                        className="w-1/3 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                        placeholder={t.pitch_scooter_price_label}
+                      />
+                      <div className="w-1/3 relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleScooterImageUpload(e, idx)}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div className={`p-2 text-sm border rounded text-center truncate ${scooter.image ? 'bg-green-100 text-green-700 border-green-200 font-bold' : 'bg-white border-gray-200 text-gray-500'}`}>
+                          {scooter.image ? '✅ Uploaded' : t.pitch_scooter_upload_img}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
               <button 
                 onClick={() => {
-                  setScooterFleet([...scooterFleet, { id: Math.random().toString(), name: '', cc: '', price: '' }]);
+                  setScooterFleet([...scooterFleet, { id: Math.random().toString(), name: '', cc: '', price: '', image: '' }]);
                 }}
                 className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 font-bold rounded-lg hover:bg-gray-50 transition-colors"
               >
-                + Voeg Scooter Toe
+                {t.pitch_scooter_add_btn}
               </button>
             </div>
           )}
@@ -530,12 +581,18 @@ export default function PitchEditor() {
                 {scooterFleet.map((scooter) => (
                   <div key={scooter.id} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
                     <div>
-                      <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
-                      <h3 className="font-bold text-gray-900">{scooter.name}</h3>
-                      <p className="text-sm text-gray-500 mb-4">{scooter.cc} • 2 helmets</p>
+                      {scooter.image ? (
+                        <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                          <img src={scooter.image} alt={scooter.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
+                      )}
+                      <h3 className="font-bold text-gray-900">{scooter.name || 'Scooter Name'}</h3>
+                      <p className="text-sm text-gray-500 mb-4">{scooter.cc || '125cc'} • 2 helmets</p>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <span className="font-black text-lg" style={{ color: color }}>€{scooter.price}/day</span>
+                      <span className="font-black text-lg" style={{ color: color }}>€{scooter.price || '35'}/day</span>
                       <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
                     </div>
                   </div>
