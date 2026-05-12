@@ -491,12 +491,22 @@ export default function PitchEditor() {
         {savedLink && (
           <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
             <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">{t.pitch_success_title}</p>
-            <Link 
-              href={businessType === 'scooter' ? `/scooters/${savedSlug}` : `/kiosk/${savedSlug}`}
-              className="block w-full text-center py-4 mb-3 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
-            >
-              {t.pitch_success_btn}
-            </Link>
+            <div className="flex gap-2 mb-3">
+              <Link 
+                href={businessType === 'scooter' ? `/scooters/${savedSlug}` : `/kiosk/${savedSlug}`}
+                className="flex-1 block text-center py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
+              >
+                {t.pitch_success_btn || 'Open Prototype'}
+              </Link>
+              {businessType === 'scooter' && (
+                <Link 
+                  href={`/scooters/${savedSlug}/admin`}
+                  className="flex-1 block text-center py-4 bg-gray-900 text-white rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors shadow-md"
+                >
+                  Backend Dashboard
+                </Link>
+              )}
+            </div>
             
             <button 
               onClick={() => {
