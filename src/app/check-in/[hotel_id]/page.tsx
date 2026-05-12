@@ -5,6 +5,7 @@ import { processCheckin } from '@/actions/submitCheckin';
 import { getHotelBranding } from '@/actions/hotelBranding';
 import { CheckCircle, Globe, Eraser, Camera, ChevronLeft } from 'lucide-react';
 import { translations, Language } from '@/lib/translations';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import PassportScanner from '@/components/PassportScanner';
 
@@ -170,9 +171,18 @@ export default function CheckInPage({
         <div className={step === 0 ? "p-8 md:p-16 bg-gradient-to-br from-white to-gray-50" : "p-6 md:p-10"}>
 
           {step === 0 && (
-            <div className="space-y-8 text-center animate-in fade-in zoom-in-95 duration-500">
+            <div className="space-y-8 text-center animate-in fade-in zoom-in-95 duration-500 relative">
+              <Link 
+                href={`/kiosk/${hotel_id}`}
+                className="absolute -top-4 -left-4 md:-top-8 md:-left-8 p-3 rounded-full md:rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold transition-colors flex items-center gap-1"
+                title="Back to Kiosk"
+              >
+                <ChevronLeft size={24} /> <span className="hidden md:inline">Back</span>
+              </Link>
               <div className="flex flex-col items-center justify-center space-y-4 mb-8">
-                <img src={brandLogo} alt={brandName} className="h-20 w-auto mx-auto mb-2 object-contain" />
+                <div className="bg-[var(--brand-color)] p-5 rounded-3xl shadow-md mb-2">
+                  <img src={brandLogo} alt={brandName} className={`h-20 w-auto mx-auto object-contain ${(brandLogo.endsWith('.svg') || brandLogo.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
+                </div>
                 <p className="text-xl text-[var(--brand-color)] font-bold">{t.header_subtitle}</p>
                 <p className="text-lg text-[var(--brand-color)]/80 font-medium opacity-80">{t.select_language}</p>
               </div>
