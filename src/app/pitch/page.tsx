@@ -78,6 +78,12 @@ export default function PitchEditor() {
     setError('');
     setSavedLink('');
 
+    if (!hotelName.trim() || !hotelSlug.trim()) {
+      setError('Hotel Name and Hotel ID (slug) are required.');
+      setIsSaving(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('name', hotelName);
@@ -310,14 +316,12 @@ export default function PitchEditor() {
         {savedLink && (
           <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
             <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">{t.pitch_success_title}</p>
-            <a 
-              href={savedLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <Link 
+              href={`/kiosk/${savedSlug}`}
               className="block w-full text-center py-4 mb-3 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
             >
               {t.pitch_success_btn}
-            </a>
+            </Link>
             
             <button 
               onClick={() => {
