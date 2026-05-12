@@ -14,6 +14,7 @@ export default function PitchEditor() {
   const [logoBase64, setLogoBase64] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [savedLink, setSavedLink] = useState('');
+  const [savedSlug, setSavedSlug] = useState('');
   const [error, setError] = useState('');
   const [language, setLanguage] = useState<Language>('nl');
   const [savedPrototypes, setSavedPrototypes] = useState<any[]>([]);
@@ -86,6 +87,7 @@ export default function PitchEditor() {
       if (result.success) {
         const host = window.location.origin;
         setSavedLink(`${host}/kiosk/${result.slug}`);
+        setSavedSlug(result.slug || '');
       } else {
         setError(result.message);
       }
@@ -136,6 +138,7 @@ export default function PitchEditor() {
                     setFont('Inter');
                     setLogoBase64('');
                     setSavedLink('');
+                    setSavedSlug('');
                   } else {
                     const selected = savedPrototypes.find(p => p.slug === val);
                     if (selected) {
@@ -145,6 +148,7 @@ export default function PitchEditor() {
                       setFont(selected.font_family || 'Inter');
                       setLogoBase64(selected.logo_url || '');
                       setSavedLink('');
+                      setSavedSlug('');
                     }
                   }
                 }}
@@ -163,6 +167,7 @@ export default function PitchEditor() {
                   setFont('Inter');
                   setLogoBase64('');
                   setSavedLink('');
+                  setSavedSlug('');
                   // Also reset the select dropdown visually if needed, but since it's uncontrolled we just rely on state.
                   // Best would be to tie select value to a state, but this works to just reset form.
                 }}
@@ -189,7 +194,13 @@ export default function PitchEditor() {
             <input 
               type="text" 
               value={hotelSlug} 
-              onChange={(e) => setHotelSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
+              onChange={(e) => {
+                let val = e.target.value.toLowerCase();
+                val = val.replace(/^https?:\/\/[^\/]*\/hoteles\//, '');
+                val = val.replace(/^https?:\/\//, '').replace(/^www\./, '');
+                val = val.replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                setHotelSlug(val);
+              }}
               className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none"
             />
           </div>
@@ -264,11 +275,23 @@ export default function PitchEditor() {
               href={savedLink} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block w-full text-center py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
+              className="block w-full text-center py-4 mb-3 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
             >
               {t.pitch_success_btn}
             </a>
-            <p className="text-xs text-green-600/70 mt-4 text-center break-all">{savedLink}</p>
+            
+            <button 
+              onClick={() => {
+                const apiUrl = `${window.location.origin}/api/v1/branding/${savedSlug}`;
+                navigator.clipboard.writeText(apiUrl);
+                alert(`API Blueprint URL copied to clipboard!\n\n${apiUrl}`);
+              }}
+              className="block w-full text-center py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-900 transition-colors shadow-md"
+            >
+              {t.pitch_export_api}
+            </button>
+
+            <p className="text-xs text-green-600/70 mt-4 text-center break-all">App Link: {savedLink}</p>
           </div>
         )}
       </div>
@@ -291,7 +314,7 @@ export default function PitchEditor() {
             {/* Kiosk Left */}
             <div className="w-full md:w-1/2 p-10 flex flex-col justify-center" style={{ backgroundColor: color }}>
               {logoBase64 ? (
-                <img src={logoBase64} alt="Logo" className="h-12 w-auto mb-10 object-contain brightness-0 invert" />
+                <img src={logoBase64} alt="Logo" className={`h-12 w-auto mb-10 object-contain ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
               ) : (
                 <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
               )}
@@ -329,7 +352,7 @@ export default function PitchEditor() {
             {/* Header */}
             <div className="p-6 pt-10 text-center text-white" style={{ backgroundColor: color }}>
               {logoBase64 ? (
-                <img src={logoBase64} alt="Logo" className="h-8 w-auto mx-auto object-contain brightness-0 invert mb-2" />
+                <img src={logoBase64} alt="Logo" className={`h-8 w-auto mx-auto object-contain mb-2 ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : 'rounded'}`} />
               ) : (
                 <div className="h-8 w-20 bg-white/20 mx-auto rounded-md mb-2"></div>
               )}

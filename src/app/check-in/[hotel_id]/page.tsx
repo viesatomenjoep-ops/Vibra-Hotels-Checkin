@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, use } from 'react';
 import { processCheckin } from '@/actions/submitCheckin';
 import { getHotelBranding } from '@/actions/hotelBranding';
-import { CheckCircle, Globe, Eraser, Camera } from 'lucide-react';
+import { CheckCircle, Globe, Eraser, Camera, ChevronLeft } from 'lucide-react';
 import { translations, Language } from '@/lib/translations';
 import dynamic from 'next/dynamic';
 import PassportScanner from '@/components/PassportScanner';
@@ -145,7 +145,16 @@ export default function CheckInPage({
 
         {/* Header */}
         {step > 0 && (
-          <div className={`${theme.primary} p-6 md:p-10 text-center text-white`}>
+          <div className={`${theme.primary} p-6 md:p-10 text-center text-white relative`}>
+            {step < 4 && (
+              <button 
+                type="button"
+                onClick={() => setStep(step - 1)}
+                className="absolute left-4 top-4 md:left-8 md:top-8 p-2 rounded-full hover:bg-white/20 transition-colors flex items-center justify-center"
+              >
+                <ChevronLeft size={28} className="text-white" />
+              </button>
+            )}
             {brandLogo.endsWith('.svg') || brandLogo.includes('vibra') ? (
               <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto brightness-0 invert object-contain" />
             ) : (
