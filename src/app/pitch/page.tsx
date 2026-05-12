@@ -124,7 +124,7 @@ export default function PitchEditor() {
           {/* Prototype Selector */}
           {savedPrototypes.length > 0 && (
             <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-              <label className="block text-sm font-bold text-gray-700 mb-2">Selecteer Opgeslagen Prototype</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_select_prototype}</label>
               <select 
                 className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium"
                 onChange={(e) => {
@@ -139,7 +139,7 @@ export default function PitchEditor() {
                   }
                 }}
               >
-                <option value="">-- Kies een prototype --</option>
+                <option value="">{t.pitch_choose_prototype || '-- Kies een prototype --'}</option>
                 {savedPrototypes.map(p => (
                   <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
                 ))}

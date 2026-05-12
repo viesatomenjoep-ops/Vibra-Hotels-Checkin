@@ -45,7 +45,9 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_btn_saving: 'Bezig met opslaan en uploaden...',
     pitch_btn_save: 'Sla Prototype Op',
     pitch_success_title: 'Succesvol opgeslagen!',
-    pitch_success_btn: 'Open het Prototype nu!'
+    pitch_success_btn: 'Open het Prototype nu!',
+    pitch_select_prototype: 'Selecteer Opgeslagen Prototype',
+    pitch_choose_prototype: '-- Kies een prototype --'
   },
   en: {
     select_language: 'Select your language',
@@ -91,7 +93,9 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_btn_saving: 'Saving and uploading...',
     pitch_btn_save: 'Save Prototype',
     pitch_success_title: 'Successfully saved!',
-    pitch_success_btn: 'Open Prototype now!'
+    pitch_success_btn: 'Open Prototype now!',
+    pitch_select_prototype: 'Select Saved Prototype',
+    pitch_choose_prototype: '-- Choose a prototype --'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -137,7 +141,9 @@ export const translations: Record<Language, Record<string, string>> = {
     pitch_btn_saving: 'Guardando y subiendo...',
     pitch_btn_save: 'Guardar Prototipo',
     pitch_success_title: '¡Guardado con éxito!',
-    pitch_success_btn: '¡Abre el prototipo ahora!'
+    pitch_success_btn: '¡Abre el prototipo ahora!',
+    pitch_select_prototype: 'Seleccionar Prototipo Guardado',
+    pitch_choose_prototype: '-- Elegir un prototipo --'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
