@@ -10,6 +10,7 @@ import { translations, Language } from '@/lib/translations';
 export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('');
   const [hotelSlug, setHotelSlug] = useState('');
+  const [businessType, setBusinessType] = useState<'hotel' | 'scooter'>('hotel');
   const [color, setColor] = useState('#00d2d3');
   const [font, setFont] = useState('Inter');
   const [logoBase64, setLogoBase64] = useState('');
@@ -88,6 +89,7 @@ export default function PitchEditor() {
       const formData = new FormData();
       formData.append('name', hotelName);
       formData.append('slug', hotelSlug);
+      formData.append('business_type', businessType);
       formData.append('color', color);
       formData.append('font_family', font);
       formData.append('logoBase64', logoBase64);
@@ -156,6 +158,7 @@ export default function PitchEditor() {
                     if (selected) {
                       setHotelName(selected.name || '');
                       setHotelSlug(selected.slug || '');
+                      setBusinessType(selected.business_type || 'hotel');
                       setColor(selected.primary_color || '#00d2d3');
                       setFont(selected.font_family || 'Inter');
                       setLogoBase64(selected.logo_url || '');
@@ -196,6 +199,7 @@ export default function PitchEditor() {
                           setSavedPrototypes(prev => prev.filter(p => p.slug !== savedSlug));
                           setHotelName('');
                           setHotelSlug('');
+                          setBusinessType('hotel');
                           setColor('#00d2d3');
                           setFont('Inter');
                           setLogoBase64('');
@@ -216,12 +220,36 @@ export default function PitchEditor() {
           )}
 
           <div className="space-y-6">
+          
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_hotel_name}</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Type Bedrijf / Platform</label>
+            <div className="flex bg-gray-100 p-1 rounded-xl">
+              <button
+                type="button"
+                onClick={() => setBusinessType('hotel')}
+                className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all ${businessType === 'hotel' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                🏨 Hotel Check-in
+              </button>
+              <button
+                type="button"
+                onClick={() => setBusinessType('scooter')}
+                className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all ${businessType === 'scooter' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                🛵 Scooter Rental
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              {businessType === 'scooter' ? 'Scooterbedrijf Naam' : t.pitch_hotel_name}
+            </label>
             <input 
               type="text" 
               value={hotelName} 
               onChange={(e) => setHotelName(e.target.value)}
+              placeholder={businessType === 'scooter' ? 'Bijv. Ibiza Scooters' : 'Bijv. Jet Hotels'}
               className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none"
             />
           </div>
@@ -342,87 +370,209 @@ export default function PitchEditor() {
       {/* Right Side: Live Viewer Preview */}
       <div className="w-full xl:w-7/12 sticky top-8 space-y-8">
         
-        {/* Kiosk Preview */}
-        <div 
-          className="w-full rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-gray-800 bg-white relative transition-all duration-300"
-          style={{ fontFamily: font }}
-        >
-          {/* Mock iPad Status bar */}
-          <div className="bg-black text-white text-[10px] font-bold px-6 py-1 flex justify-between items-center opacity-80">
-            <span>9:41 AM</span>
-            <div className="flex gap-2"><span>100%</span><span>🔋</span></div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row min-h-[400px]">
-            {/* Kiosk Left */}
-            <div className="w-full md:w-1/2 p-10 flex flex-col justify-center" style={{ backgroundColor: color }}>
-              {logoBase64 ? (
-                <img src={logoBase64} alt="Logo" className={`h-12 w-auto mb-10 object-contain ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
-              ) : (
-                <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
-              )}
-              <p className="mt-2 text-lg text-white opacity-90">{t.kiosk_title}</p>
-              <div className="w-full h-1 bg-white/20 rounded-full my-6"></div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> {t.kiosk_step1}</div>
-                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> {t.kiosk_step2}</div>
-              </div>
-            </div>
-            {/* Kiosk Right (QR Code mockup) */}
-            <div className="w-full md:w-1/2 bg-gray-50 p-10 flex flex-col items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 transform transition-transform hover:scale-105 duration-300">
-                {/* Fake QR using CSS grid */}
-                <div className="w-40 h-40 grid grid-cols-4 grid-rows-4 gap-1 p-2" style={{ backgroundColor: color }}>
-                  {Array.from({length: 16}).map((_, i) => (
-                    <div key={i} className={`bg-white ${i%2===0 || i%3===0 ? 'opacity-100' : 'opacity-0'}`}></div>
-                  ))}
-                </div>
-              </div>
-              <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>{t.kiosk_scan_here}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile App Preview */}
-        <div className="flex justify-center">
+        {businessType === 'hotel' ? (
+          /* Kiosk Preview */
           <div 
-            className="w-[320px] h-[600px] rounded-[3rem] shadow-2xl border-[12px] border-gray-800 bg-gray-50 relative overflow-hidden flex flex-col"
+            className="w-full rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-gray-800 bg-white relative transition-all duration-300"
             style={{ fontFamily: font }}
           >
-            {/* Dynamic iPhone Notch */}
-            <div className="absolute top-0 inset-x-0 h-6 bg-gray-800 rounded-b-3xl w-1/2 mx-auto z-10"></div>
-            
-            {/* Header */}
-            <div className="p-6 pt-10 text-center text-white" style={{ backgroundColor: color }}>
-              {logoBase64 ? (
-                <img src={logoBase64} alt="Logo" className={`h-8 w-auto mx-auto object-contain mb-2 ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : 'rounded'}`} />
-              ) : (
-                <div className="h-8 w-20 bg-white/20 mx-auto rounded-md mb-2"></div>
-              )}
-              <p className="text-xs opacity-90">{t.header_subtitle}</p>
+            {/* Mock iPad Status bar */}
+            <div className="bg-black text-white text-[10px] font-bold px-6 py-1 flex justify-between items-center opacity-80">
+              <span>9:41 AM</span>
+              <div className="flex gap-2"><span>100%</span><span>🔋</span></div>
             </div>
-
-            {/* Content */}
-            <div className="flex-1 p-6 space-y-6 overflow-hidden">
-              <h3 className="text-xl font-bold" style={{ color: color }}>{t.personal_details}</h3>
-              <div className="space-y-4">
-                <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-1/2 bg-gray-200 rounded"></div></div>
-                <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-2/3 bg-gray-200 rounded"></div></div>
-                <div className="h-24 bg-white rounded-xl border-2 border-dashed border-gray-300 w-full flex items-center justify-center flex-col text-gray-400">
-                  <span className="text-2xl mb-1">📷</span>
-                  <span className="text-xs font-bold uppercase tracking-wider">{t.upload_id_title}</span>
+            
+            <div className="flex flex-col md:flex-row min-h-[400px]">
+              {/* Kiosk Left */}
+              <div className="w-full md:w-1/2 p-10 flex flex-col justify-center" style={{ backgroundColor: color }}>
+                {logoBase64 ? (
+                  <img src={logoBase64} alt="Logo" className={`h-12 w-auto mb-10 object-contain ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
+                ) : (
+                  <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
+                )}
+                <p className="mt-2 text-lg text-white opacity-90">{t.kiosk_title}</p>
+                <div className="w-full h-1 bg-white/20 rounded-full my-6"></div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> {t.kiosk_step1}</div>
+                  <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> {t.kiosk_step2}</div>
+                </div>
+              </div>
+              {/* Kiosk Right (QR Code mockup) */}
+              <div className="w-full md:w-1/2 bg-gray-50 p-10 flex flex-col items-center justify-center">
+                <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 transform transition-transform hover:scale-105 duration-300">
+                  {/* Fake QR using CSS grid */}
+                  <div className="w-40 h-40 grid grid-cols-4 grid-rows-4 gap-1 p-2" style={{ backgroundColor: color }}>
+                    {Array.from({length: 16}).map((_, i) => (
+                      <div key={i} className={`bg-white ${i%2===0 || i%3===0 ? 'opacity-100' : 'opacity-0'}`}></div>
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>{t.kiosk_scan_here}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Scooter Desktop Preview */
+          <div 
+            className="w-full rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white relative transition-all duration-300"
+            style={{ fontFamily: font }}
+          >
+            {/* Fake Browser Bar */}
+            <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-200">
+              <div className="flex gap-1.5"><span className="w-3 h-3 rounded-full bg-red-400"></span><span className="w-3 h-3 rounded-full bg-yellow-400"></span><span className="w-3 h-3 rounded-full bg-green-400"></span></div>
+              <div className="ml-4 flex-1 bg-white rounded-md px-3 py-1 text-xs text-gray-400 text-center font-mono">viesa-scooters.vercel.app/{hotelSlug || 'ibiza-scooters'}</div>
+            </div>
+            
+            {/* Hero Section */}
+            <div className="h-64 relative flex items-center justify-center bg-gray-900 overflow-hidden">
+              <div className="absolute inset-0 bg-black/40 z-10"></div>
+              <img src="https://images.unsplash.com/photo-1498887960847-2a5e46312788?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-60" alt="Scooter hero" />
+              
+              <div className="z-20 text-center px-6">
+                {logoBase64 ? (
+                  <img src={logoBase64} alt="Logo" className="h-16 w-auto mx-auto object-contain mb-6 drop-shadow-lg" />
+                ) : (
+                  <h1 className="text-4xl font-black text-white mb-6 drop-shadow-md">{hotelName || 'Ibiza Scooters'}</h1>
+                )}
+                <div className="bg-white p-4 rounded-2xl shadow-2xl flex gap-4 max-w-2xl mx-auto items-end">
+                  <div className="flex-1 text-left">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Pick-up Date</label>
+                    <div className="font-medium text-gray-900 border-b-2 border-gray-100 pb-1">12 Aug 2026</div>
+                  </div>
+                  <div className="flex-1 text-left">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Return Date</label>
+                    <div className="font-medium text-gray-900 border-b-2 border-gray-100 pb-1">19 Aug 2026</div>
+                  </div>
+                  <button className="px-6 py-3 text-white font-bold rounded-xl shadow-lg hover:brightness-110 transition-all" style={{ backgroundColor: color }}>
+                    Search
+                  </button>
                 </div>
               </div>
             </div>
-
-            {/* Button */}
-            <div className="p-6 bg-white border-t border-gray-100">
-              <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg" style={{ backgroundColor: color }}>
-                {t.complete_checkin}
-              </button>
+            
+            {/* Fleet Section */}
+            <div className="p-8 bg-gray-50">
+              <h2 className="text-xl font-black text-gray-900 mb-6 text-center">Select your scooter</h2>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
+                  <h3 className="font-bold text-gray-900">Vespa Primavera 125cc</h3>
+                  <p className="text-sm text-gray-500 mb-4">Includes 2 helmets & insurance</p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-black text-lg" style={{ color: color }}>€35/day</span>
+                    <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🏍️</div>
+                  <h3 className="font-bold text-gray-900">Honda PCX 125cc</h3>
+                  <p className="text-sm text-gray-500 mb-4">Extra storage space</p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-black text-lg" style={{ color: color }}>€28/day</span>
+                    <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {businessType === 'hotel' ? (
+          /* Mobile App Preview (Hotel) */
+          <div className="flex justify-center mt-12">
+            <div 
+              className="w-[320px] h-[600px] rounded-[3rem] shadow-2xl border-[12px] border-gray-800 bg-gray-50 relative overflow-hidden flex flex-col"
+              style={{ fontFamily: font }}
+            >
+              {/* Dynamic iPhone Notch */}
+              <div className="absolute top-0 inset-x-0 h-6 bg-gray-800 rounded-b-3xl w-1/2 mx-auto z-10"></div>
+              
+              {/* Header */}
+              <div className="p-6 pt-10 text-center text-white" style={{ backgroundColor: color }}>
+                {logoBase64 ? (
+                  <img src={logoBase64} alt="Logo" className={`h-8 w-auto mx-auto object-contain mb-2 ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : 'rounded'}`} />
+                ) : (
+                  <div className="h-8 w-20 bg-white/20 mx-auto rounded-md mb-2"></div>
+                )}
+                <p className="text-xs opacity-90">{t.header_subtitle}</p>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 p-6 space-y-6 overflow-hidden">
+                <h3 className="text-xl font-bold" style={{ color: color }}>{t.personal_details}</h3>
+                <div className="space-y-4">
+                  <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-1/2 bg-gray-200 rounded"></div></div>
+                  <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-2/3 bg-gray-200 rounded"></div></div>
+                  <div className="h-24 bg-white rounded-xl border-2 border-dashed border-gray-300 w-full flex items-center justify-center flex-col text-gray-400">
+                    <span className="text-2xl mb-1">📷</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">{t.upload_id_title}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Button */}
+              <div className="p-6 bg-white border-t border-gray-100">
+                <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg" style={{ backgroundColor: color }}>
+                  {t.complete_checkin}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Mobile App Preview (Scooter) */
+          <div className="flex justify-center mt-12">
+            <div 
+              className="w-[320px] h-[600px] rounded-[3rem] shadow-2xl border-[12px] border-gray-800 bg-gray-50 relative overflow-hidden flex flex-col"
+              style={{ fontFamily: font }}
+            >
+              {/* Dynamic iPhone Notch */}
+              <div className="absolute top-0 inset-x-0 h-6 bg-gray-800 rounded-b-3xl w-1/2 mx-auto z-10"></div>
+              
+              {/* Header */}
+              <div className="p-6 pt-10 text-center bg-white border-b border-gray-100">
+                {logoBase64 ? (
+                  <img src={logoBase64} alt="Logo" className="h-8 w-auto mx-auto object-contain mb-1" />
+                ) : (
+                  <h3 className="text-lg font-black text-gray-900">{hotelName || 'Ibiza Scooters'}</h3>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 p-5 overflow-y-auto bg-gray-50">
+                <h3 className="text-lg font-bold mb-4 text-gray-900">Your Booking</h3>
+                
+                <div className="bg-white p-4 rounded-2xl shadow-sm mb-4 border border-gray-100">
+                  <div className="flex gap-4 mb-4">
+                    <div className="h-16 w-16 bg-gray-100 rounded-xl flex items-center justify-center text-3xl">🛵</div>
+                    <div>
+                      <p className="font-bold text-gray-900">Vespa Primavera</p>
+                      <p className="text-xs text-gray-500">12 - 19 Aug 2026 (7 days)</p>
+                      <p className="text-sm font-black mt-1" style={{ color: color }}>€245.00</p>
+                    </div>
+                  </div>
+                  <div className="h-[1px] w-full bg-gray-100 mb-4"></div>
+                  <p className="text-xs font-bold text-gray-500 uppercase mb-2">Driver Details</p>
+                  <div className="space-y-2">
+                    <div className="h-10 bg-gray-50 rounded-lg w-full flex items-center px-3"><div className="h-2 w-1/2 bg-gray-200 rounded"></div></div>
+                    <div className="h-10 bg-gray-50 rounded-lg w-full flex items-center px-3"><div className="h-2 w-2/3 bg-gray-200 rounded"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Button */}
+              <div className="p-5 bg-white border-t border-gray-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-500 font-medium">Total</span>
+                  <span className="text-xl font-black text-gray-900">€245.00</span>
+                </div>
+                <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg flex justify-center items-center gap-2" style={{ backgroundColor: color }}>
+                  <span>Pay & Reserve</span>
+                  <span>🔒</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

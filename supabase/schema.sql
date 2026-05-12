@@ -36,12 +36,32 @@ CREATE TABLE checkins (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Beveiliging: Zet Row Level Security (RLS) aan
+-- 4. Voeg business type toe aan hotels voor de scooter uitbreiding
+ALTER TABLE hotels ADD COLUMN IF NOT EXISTS business_type TEXT DEFAULT 'hotel';
+
+-- 5. Maak de Scooter Bookings tabel
+CREATE TABLE scooter_bookings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  business_id UUID REFERENCES hotels(id) ON DELETE CASCADE,
+  guest_name TEXT NOT NULL,
+  guest_email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  scooter_model TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  pickup_time TEXT,
+  status TEXT DEFAULT 'reserved' CHECK (status IN ('reserved', 'active', 'completed', 'cancelled')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Beveiliging: Zet Row Level Security (RLS) aan
 ALTER TABLE hotels ENABLE ROW LEVEL SECURITY;
 ALTER TABLE guests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE checkins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE scooter_bookings ENABLE ROW LEVEL SECURITY;
 
 -- 5. RLS Policies: API keys mogen alleen check-ins wegschrijven (Insert) of lezen o.b.v. hotel_id
 CREATE POLICY "Allow public inserts for checkins" ON checkins FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public inserts for guests" ON guests FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public read access for hotel branding" ON hotels FOR SELECT USING (true);
+CREATE POLICY "Allow public inserts for scooter_bookings" ON scooter_bookings FOR INSERT WITH CHECK (true);
