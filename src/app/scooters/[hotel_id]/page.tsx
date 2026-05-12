@@ -78,9 +78,13 @@ export default function ScooterBookingPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {fleet.map((scooter: any) => (
             <div key={scooter.id} className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-xl duration-300">
-              <div className="h-48 bg-gray-100 relative flex items-center justify-center">
-                <span className="text-7xl">🛵</span>
-                <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">Available</div>
+              <div className="h-48 bg-gray-100 relative flex items-center justify-center overflow-hidden">
+                {scooter.image ? (
+                  <img src={scooter.image} alt={scooter.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-7xl">🛵</span>
+                )}
+                <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold shadow-sm z-10">Available</div>
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
