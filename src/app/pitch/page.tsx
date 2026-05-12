@@ -8,9 +8,9 @@ import { deleteHotel } from '@/actions/deleteHotel';
 import { translations, Language } from '@/lib/translations';
 
 export default function PitchEditor() {
-  const [hotelName, setHotelName] = useState('Jet Hotels');
-  const [hotelSlug, setHotelSlug] = useState('jet-hotels');
-  const [color, setColor] = useState('#ff0000');
+  const [hotelName, setHotelName] = useState('');
+  const [hotelSlug, setHotelSlug] = useState('');
+  const [color, setColor] = useState('#00d2d3');
   const [font, setFont] = useState('Inter');
   const [logoBase64, setLogoBase64] = useState('');
   const [logoFileName, setLogoFileName] = useState('');
