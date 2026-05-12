@@ -3,6 +3,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 import { translations, Language } from '@/lib/translations';
+import Link from 'next/link';
 
 export default function KioskPage({ params }: { params: { hotel_id: string } }) {
   const [url, setUrl] = useState('');
@@ -51,6 +52,15 @@ export default function KioskPage({ params }: { params: { hotel_id: string } }) 
               <div className="w-10 h-10 rounded-full bg-[#00d2d3]/20 flex items-center justify-center text-[#00d2d3] font-bold text-xl border border-[#00d2d3]/30">3</div>
               <p className="text-xl font-bold">{t.kiosk_step3}</p>
             </div>
+          </div>
+          
+          <div className="mt-12 pt-8 border-t border-[#00d2d3]/10">
+            <Link 
+              href={`/check-in/${params.hotel_id}?lang=${language}`}
+              className="inline-block bg-white text-[#00d2d3] border-2 border-[#00d2d3] hover:bg-[#00d2d3] hover:text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-sm"
+            >
+              {t.kiosk_manual_button}
+            </Link>
           </div>
         </div>
 

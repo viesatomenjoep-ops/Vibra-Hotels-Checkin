@@ -31,7 +31,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Open uw camera',
     kiosk_step2: 'Scan de code',
     kiosk_step3: 'Onderteken & Geniet',
-    kiosk_scan_here: 'Scan hier met uw camera'
+    kiosk_scan_here: 'Scan hier met uw camera',
+    kiosk_manual_button: 'Of check direct in op dit apparaat'
   },
   en: {
     select_language: 'Select your language',
@@ -63,7 +64,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Open your camera',
     kiosk_step2: 'Scan the code',
     kiosk_step3: 'Sign & Relax',
-    kiosk_scan_here: 'Point camera here'
+    kiosk_scan_here: 'Point camera here',
+    kiosk_manual_button: 'Or check in on this device'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -95,7 +97,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Abre tu cámara',
     kiosk_step2: 'Escanea el código',
     kiosk_step3: 'Firma y Relájate',
-    kiosk_scan_here: 'Apunta la cámara aquí'
+    kiosk_scan_here: 'Apunta la cámara aquí',
+    kiosk_manual_button: 'O regístrese en este dispositivo'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
@@ -127,7 +130,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Kamera öffnen',
     kiosk_step2: 'Code scannen',
     kiosk_step3: 'Unterschreiben & Genießen',
-    kiosk_scan_here: 'Kamera hier ausrichten'
+    kiosk_scan_here: 'Kamera hier ausrichten',
+    kiosk_manual_button: 'Oder auf diesem Gerät einchecken'
   },
   it: {
     select_language: 'Seleziona la tua lingua',
@@ -159,7 +163,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Apri la fotocamera',
     kiosk_step2: 'Scansiona il codice',
     kiosk_step3: 'Firma e Rilassati',
-    kiosk_scan_here: 'Punta la fotocamera qui'
+    kiosk_scan_here: 'Punta la fotocamera qui',
+    kiosk_manual_button: 'Oppure fai il check-in su questo dispositivo'
   },
   pt: {
     select_language: 'Selecione o seu idioma',
@@ -191,6 +196,7 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step1: 'Abra a sua câmara',
     kiosk_step2: 'Digitalize o código',
     kiosk_step3: 'Assine e Relaxe',
-    kiosk_scan_here: 'Aponte a câmara aqui'
+    kiosk_scan_here: 'Aponte a câmara aqui',
+    kiosk_manual_button: 'Ou faça o check-in neste dispositivo'
   }
 };
