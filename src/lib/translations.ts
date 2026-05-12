@@ -25,7 +25,13 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Begin direct met ontspannen',
     upsell_desc: 'De zon schijnt morgen weer. Reserveer alvast de beste plek aan het zwembad.',
     upsell_button: 'Bekijk Strandbedden Map',
-    continue_manual: 'Of vul handmatig in'
+    continue_manual: 'Of vul handmatig in',
+    kiosk_title: 'Fast & Digital Check-in',
+    kiosk_subtitle: 'Scan de QR code met de camera van uw smartphone om in te checken. Uw telefoon vult automatisch uw gegevens in!',
+    kiosk_step1: 'Open uw camera',
+    kiosk_step2: 'Scan de code',
+    kiosk_step3: 'Onderteken & Geniet',
+    kiosk_scan_here: 'Scan hier met uw camera'
   },
   en: {
     select_language: 'Select your language',
@@ -51,7 +57,13 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Start relaxing immediately',
     upsell_desc: 'The sun will shine again tomorrow. Reserve the best spot by the pool now.',
     upsell_button: 'View Sunbeds Map',
-    continue_manual: 'Or fill in manually'
+    continue_manual: 'Or fill in manually',
+    kiosk_title: 'Fast & Digital Check-in',
+    kiosk_subtitle: 'Scan the QR code with your smartphone camera to check in. Your phone will automatically fill in your details!',
+    kiosk_step1: 'Open your camera',
+    kiosk_step2: 'Scan the code',
+    kiosk_step3: 'Sign & Relax',
+    kiosk_scan_here: 'Point camera here'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -77,7 +89,13 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Empieza a relajarte de inmediato',
     upsell_desc: 'Mañana volverá a brillar el sol. Reserva ya el mejor sitio en la piscina.',
     upsell_button: 'Ver Mapa de Hamacas',
-    continue_manual: 'O rellenar manualmente'
+    continue_manual: 'O rellenar manualmente',
+    kiosk_title: 'Check-in Rápido y Digital',
+    kiosk_subtitle: 'Escanee el código QR con la cámara de su smartphone para registrarse. ¡Su teléfono completará automáticamente sus datos!',
+    kiosk_step1: 'Abre tu cámara',
+    kiosk_step2: 'Escanea el código',
+    kiosk_step3: 'Firma y Relájate',
+    kiosk_scan_here: 'Apunta la cámara aquí'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
@@ -103,7 +121,13 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Beginnen Sie sofort zu entspannen',
     upsell_desc: 'Morgen scheint die Sonne wieder. Reservieren Sie schon jetzt den besten Platz am Pool.',
     upsell_button: 'Sonnenliegen-Karte ansehen',
-    continue_manual: 'Oder manuell ausfüllen'
+    continue_manual: 'Oder manuell ausfüllen',
+    kiosk_title: 'Schneller & Digitaler Check-in',
+    kiosk_subtitle: 'Scannen Sie den QR-Code mit Ihrer Smartphone-Kamera, um einzuchecken. Ihr Telefon füllt Ihre Daten automatisch aus!',
+    kiosk_step1: 'Kamera öffnen',
+    kiosk_step2: 'Code scannen',
+    kiosk_step3: 'Unterschreiben & Genießen',
+    kiosk_scan_here: 'Kamera hier ausrichten'
   },
   it: {
     select_language: 'Seleziona la tua lingua',
@@ -129,7 +153,13 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Inizia subito a rilassarti',
     upsell_desc: 'Il sole tornerà a splendere domani. Prenota subito il posto migliore in piscina.',
     upsell_button: 'Visualizza Mappa Lettini',
-    continue_manual: 'O compila manualmente'
+    continue_manual: 'O compila manualmente',
+    kiosk_title: 'Check-in Veloce e Digitale',
+    kiosk_subtitle: 'Scansiona il codice QR con la fotocamera del tuo smartphone per fare il check-in. Il tuo telefono compilerà automaticamente i tuoi dati!',
+    kiosk_step1: 'Apri la fotocamera',
+    kiosk_step2: 'Scansiona il codice',
+    kiosk_step3: 'Firma e Rilassati',
+    kiosk_scan_here: 'Punta la fotocamera qui'
   },
   pt: {
     select_language: 'Selecione o seu idioma',
@@ -155,6 +185,12 @@ export const translations: Record<Language, Record<string, string>> = {
     upsell_title: 'Comece a relaxar imediatamente',
     upsell_desc: 'O sol vai brilhar novamente amanhã. Reserve já o melhor lugar na piscina.',
     upsell_button: 'Ver Mapa de Espreguiçadeiras',
-    continue_manual: 'Ou preencha manualmente'
+    continue_manual: 'Ou preencha manualmente',
+    kiosk_title: 'Check-in Rápido e Digital',
+    kiosk_subtitle: 'Digitalize o código QR com a câmara do seu smartphone para fazer o check-in. O seu telemóvel preencherá automaticamente os seus dados!',
+    kiosk_step1: 'Abra a sua câmara',
+    kiosk_step2: 'Digitalize o código',
+    kiosk_step3: 'Assine e Relaxe',
+    kiosk_scan_here: 'Aponte a câmara aqui'
   }
 };
