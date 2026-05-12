@@ -122,7 +122,7 @@ export default function PitchEditor() {
           </div>
 
           <div className="flex items-center gap-4 mb-2">
-            <img src="/viesa-logo.svg" alt="Viesa Logo" className="w-12 h-12" />
+            <img src="/viesa-logo.png" alt="Viesa Logo" className="w-12 h-12 object-contain" />
             <h1 className="text-3xl font-black text-gray-900">{t.pitch_title}</h1>
           </div>
           <p className="text-gray-500 mb-8">{t.pitch_subtitle}</p>
