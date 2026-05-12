@@ -77,7 +77,6 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(videoRef.current, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-            // Stronger image preprocessing for OCR: high contrast, slight brightness boost
             ctx.filter = 'contrast(2.0) brightness(1.1) grayscale(1)';
             ctx.drawImage(canvas, 0, 0);
             idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
@@ -89,73 +88,76 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
           continue;
         }
 
-        const { data: { text } } = await worker.recognize(idPhotoBase64);
-        
-        // Normalize common OCR errors in MRZ
-        const normalizedText = text.replace(/[«]/g, '<').replace(/\s+/g, '');
-        const lines = normalizedText.split('\n');
-        
-        let firstName = '';
-        let lastName = '';
-        let country = '';
-
-        let mrzNameLine = '';
-        let maxChevrons = 0;
-        
-        for (const line of lines) {
-          const chevronCount = (line.match(/</g) || []).length;
-          if (chevronCount > maxChevrons && chevronCount > 2) {
-            maxChevrons = chevronCount;
-            mrzNameLine = line;
-          }
-        }
-        
-        if (mrzNameLine) {
-          let cleanLine = mrzNameLine;
-          const prefixMatch = mrzNameLine.match(/^[PIACV]</) || mrzNameLine.startsWith('ID');
-          if (prefixMatch) {
-            if (mrzNameLine.length >= 5) {
-              country = mrzNameLine.substring(2, 5).replace(/</g, '');
-              cleanLine = mrzNameLine.substring(5);
-            }
-          } else if (mrzNameLine.length > 5 && mrzNameLine.includes('<<')) {
-            const firstPart = mrzNameLine.split('<<')[0];
-            if (firstPart.length > 5 && (firstPart[2] !== '<' || firstPart[3] !== '<')) {
-               cleanLine = mrzNameLine.substring(5);
-            }
-          }
-
-          const nameParts = cleanLine.split(/<<+/).filter(p => p.length > 0 && !/^<+$/.test(p));
+        try {
+          const { data: { text } } = await worker.recognize(idPhotoBase64);
           
-          if (nameParts.length > 0) {
-            lastName = nameParts[0].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
+          const normalizedText = text.replace(/[«]/g, '<').replace(/\s+/g, '');
+          const lines = normalizedText.split('\n');
+          
+          let firstName = '';
+          let lastName = '';
+          let country = '';
+
+          let mrzNameLine = '';
+          let maxChevrons = 0;
+          
+          for (const line of lines) {
+            const chevronCount = (line.match(/</g) || []).length;
+            if (chevronCount > maxChevrons && chevronCount > 2) {
+              maxChevrons = chevronCount;
+              mrzNameLine = line;
+            }
           }
-          if (nameParts.length > 1) {
-            firstName = nameParts[1].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
+          
+          if (mrzNameLine) {
+            let cleanLine = mrzNameLine;
+            const prefixMatch = mrzNameLine.match(/^[PIACV]</) || mrzNameLine.startsWith('ID');
+            if (prefixMatch) {
+              if (mrzNameLine.length >= 5) {
+                country = mrzNameLine.substring(2, 5).replace(/</g, '');
+                cleanLine = mrzNameLine.substring(5);
+              }
+            } else if (mrzNameLine.length > 5 && mrzNameLine.includes('<<')) {
+              const firstPart = mrzNameLine.split('<<')[0];
+              if (firstPart.length > 5 && (firstPart[2] !== '<' || firstPart[3] !== '<')) {
+                 cleanLine = mrzNameLine.substring(5);
+              }
+            }
+
+            const nameParts = cleanLine.split(/<<+/).filter(p => p.length > 0 && !/^<+$/.test(p));
+            
+            if (nameParts.length > 0) {
+              lastName = nameParts[0].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
+            }
+            if (nameParts.length > 1) {
+              firstName = nameParts[1].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
+            }
           }
+
+          if (firstName.length >= 2 && lastName.length >= 2) {
+            foundValidData = true;
+            await worker.terminate();
+            setIsScanning(false);
+            onScanComplete({ firstName, lastName, country, idPhotoBase64 });
+            return;
+          }
+        } catch (e) {
+          console.error("Frame OCR error:", e);
         }
 
-        // If we found both names, we succeed!
-        if (firstName.length >= 2 && lastName.length >= 2) {
-          foundValidData = true;
-          await worker.terminate();
-          setIsScanning(false);
-          onScanComplete({ firstName, lastName, country, idPhotoBase64 });
-          return;
-        }
-
-        // Wait a short bit before capturing next frame
         await new Promise(r => setTimeout(r, 400));
       }
 
-      // If loop finished without success
       await worker.terminate();
       setIsScanning(false);
+      // Give them a fallback alert if it fails instead of silently skipping
+      alert("Kan paspoort niet automatisch scannen na 15 seconden. Vul a.u.b. uw gegevens handmatig in.");
       onScanComplete({ firstName: '', lastName: '', country: '', idPhotoBase64: '' });
 
     } catch (err) {
-      console.error("OCR Error:", err);
+      console.error("OCR Setup Error:", err);
       setIsScanning(false);
+      alert("Scanner kon niet worden gestart. Vul a.u.b. uw gegevens handmatig in.");
       onScanComplete({ firstName: '', lastName: '', country: '' });
     }
   };
