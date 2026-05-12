@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { saveHotelBranding } from '@/actions/hotelBranding';
+import { getAllHotels } from '@/actions/getAllHotels';
 import { translations, Language } from '@/lib/translations';
 
 export default function PitchEditor() {
@@ -15,7 +16,16 @@ export default function PitchEditor() {
   const [savedLink, setSavedLink] = useState('');
   const [error, setError] = useState('');
   const [language, setLanguage] = useState<Language>('nl');
+  const [savedPrototypes, setSavedPrototypes] = useState<any[]>([]);
   const t = translations[language];
+
+  useEffect(() => {
+    getAllHotels().then(res => {
+      if (res.success && res.hotels) {
+        setSavedPrototypes(res.hotels);
+      }
+    });
+  }, []);
 
   const languages = [
     { code: 'en', short: 'EN' },
@@ -110,6 +120,32 @@ export default function PitchEditor() {
 
           <h1 className="text-3xl font-black mb-2 text-gray-900">{t.pitch_title}</h1>
           <p className="text-gray-500 mb-8">{t.pitch_subtitle}</p>
+
+          {/* Prototype Selector */}
+          {savedPrototypes.length > 0 && (
+            <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Selecteer Opgeslagen Prototype</label>
+              <select 
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium"
+                onChange={(e) => {
+                  const selected = savedPrototypes.find(p => p.slug === e.target.value);
+                  if (selected) {
+                    setHotelName(selected.name || '');
+                    setHotelSlug(selected.slug || '');
+                    setColor(selected.primary_color || '#00d2d3');
+                    setFont(selected.font_family || 'Inter');
+                    setLogoBase64(selected.logo_url || '');
+                    setSavedLink('');
+                  }
+                }}
+              >
+                <option value="">-- Kies een prototype --</option>
+                {savedPrototypes.map(p => (
+                  <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="space-y-6">
           <div>
@@ -233,11 +269,11 @@ export default function PitchEditor() {
               ) : (
                 <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
               )}
-              <h2 className="text-4xl font-black text-white mb-4 leading-tight">Welcome to<br/>{hotelName}</h2>
-              <div className="w-full h-1 bg-white/20 rounded-full mb-8"></div>
+              <p className="mt-2 text-lg text-white opacity-90">{t.kiosk_title}</p>
+              <div className="w-full h-1 bg-white/20 rounded-full my-6"></div>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> Scan je ID</div>
-                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> Check je data</div>
+                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> {t.kiosk_step1}</div>
+                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> {t.kiosk_step2}</div>
               </div>
             </div>
             {/* Kiosk Right (QR Code mockup) */}
@@ -250,7 +286,7 @@ export default function PitchEditor() {
                   ))}
                 </div>
               </div>
-              <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>SCAN HIER OM TE STARTEN</p>
+              <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>{t.kiosk_scan_here}</p>
             </div>
           </div>
         </div>
@@ -267,21 +303,22 @@ export default function PitchEditor() {
             {/* Header */}
             <div className="p-6 pt-10 text-center text-white" style={{ backgroundColor: color }}>
               {logoBase64 ? (
-                <img src={logoBase64} alt="Logo" className="h-8 w-auto mx-auto object-contain brightness-0 invert" />
+                <img src={logoBase64} alt="Logo" className="h-8 w-auto mx-auto object-contain brightness-0 invert mb-2" />
               ) : (
-                <div className="h-8 w-20 bg-white/20 mx-auto rounded-md"></div>
+                <div className="h-8 w-20 bg-white/20 mx-auto rounded-md mb-2"></div>
               )}
+              <p className="text-xs opacity-90">{t.header_subtitle}</p>
             </div>
 
             {/* Content */}
             <div className="flex-1 p-6 space-y-6 overflow-hidden">
-              <h3 className="text-xl font-bold" style={{ color: color }}>Jouw gegevens</h3>
+              <h3 className="text-xl font-bold" style={{ color: color }}>{t.personal_details}</h3>
               <div className="space-y-4">
                 <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-1/2 bg-gray-200 rounded"></div></div>
                 <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-2/3 bg-gray-200 rounded"></div></div>
                 <div className="h-24 bg-white rounded-xl border-2 border-dashed border-gray-300 w-full flex items-center justify-center flex-col text-gray-400">
                   <span className="text-2xl mb-1">📷</span>
-                  <span className="text-xs font-bold uppercase tracking-wider">Paspoort Foto</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{t.upload_id_title}</span>
                 </div>
               </div>
             </div>
@@ -289,7 +326,7 @@ export default function PitchEditor() {
             {/* Button */}
             <div className="p-6 bg-white border-t border-gray-100">
               <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg" style={{ backgroundColor: color }}>
-                Voltooi Check-in
+                {t.complete_checkin}
               </button>
             </div>
           </div>
