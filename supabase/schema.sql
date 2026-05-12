@@ -1,5 +1,5 @@
 -- 1. Maak de Hotels tabel (Multi-tenant basis)
-CREATE TABLE hotels (
+CREATE TABLE IF NOT EXISTS hotels (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL, -- bijv. 'vibra-algarb'
@@ -11,7 +11,7 @@ CREATE TABLE hotels (
 );
 
 -- 2. Maak de Guests tabel
-CREATE TABLE guests (
+CREATE TABLE IF NOT EXISTS guests (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE guests (
 );
 
 -- 3. Maak de Checkins tabel
-CREATE TABLE checkins (
+CREATE TABLE IF NOT EXISTS checkins (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   hotel_id UUID REFERENCES hotels(id) ON DELETE CASCADE,
   guest_id UUID REFERENCES guests(id) ON DELETE CASCADE,
@@ -37,7 +37,7 @@ CREATE TABLE checkins (
 );
 
 -- 4. Maak de Scooter Companies tabel
-CREATE TABLE scooter_companies (
+CREATE TABLE IF NOT EXISTS scooter_companies (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   slug TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE scooter_companies (
 );
 
 -- 5. Maak de Scooter Bookings tabel
-CREATE TABLE scooter_bookings (
+CREATE TABLE IF NOT EXISTS scooter_bookings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   company_id UUID REFERENCES scooter_companies(id) ON DELETE CASCADE,
   guest_name TEXT NOT NULL,
@@ -71,8 +71,17 @@ ALTER TABLE scooter_companies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scooter_bookings ENABLE ROW LEVEL SECURITY;
 
 -- 6. RLS Policies:
+DROP POLICY IF EXISTS "Allow public inserts for checkins" ON checkins;
 CREATE POLICY "Allow public inserts for checkins" ON checkins FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public inserts for guests" ON guests;
 CREATE POLICY "Allow public inserts for guests" ON guests FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public read access for hotel branding" ON hotels;
 CREATE POLICY "Public read access for hotel branding" ON hotels FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access for scooter_companies" ON scooter_companies;
 CREATE POLICY "Public read access for scooter_companies" ON scooter_companies FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public inserts for scooter_bookings" ON scooter_bookings;
 CREATE POLICY "Allow public inserts for scooter_bookings" ON scooter_bookings FOR INSERT WITH CHECK (true);
