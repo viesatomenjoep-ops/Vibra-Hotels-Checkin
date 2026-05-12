@@ -34,7 +34,18 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_scan_here: 'Scan hier met uw camera',
     kiosk_manual_button: 'Of check direct in op dit apparaat',
     upload_id_title: 'Upload Identiteitsbewijs',
-    upload_id_desc: 'Maak een foto van uw paspoort of ID-kaart (optioneel indien gescand)'
+    upload_id_desc: 'Maak een foto van uw paspoort of ID-kaart (optioneel indien gescand)',
+    pitch_title: 'Viesa Pitch Editor',
+    pitch_subtitle: 'Live editor. Maak razendsnel een prototype aan inclusief database opslag.',
+    pitch_hotel_name: 'Hotel Naam',
+    pitch_hotel_slug: 'Hotel ID (Unieke URL naam)',
+    pitch_brand_color: 'Brand Color (Hoofdkleur)',
+    pitch_typography: 'Typografie / Font (Google Fonts)',
+    pitch_upload_logo: 'Upload Logo (Bestand)',
+    pitch_btn_saving: 'Bezig met opslaan en uploaden...',
+    pitch_btn_save: 'Sla Prototype Op',
+    pitch_success_title: 'Succesvol opgeslagen!',
+    pitch_success_btn: 'Open het Prototype nu!'
   },
   en: {
     select_language: 'Select your language',
@@ -69,7 +80,18 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_scan_here: 'Point camera here',
     kiosk_manual_button: 'Or check in on this device',
     upload_id_title: 'Upload Identity Document',
-    upload_id_desc: 'Take a photo of your passport or ID card (optional if scanned)'
+    upload_id_desc: 'Take a photo of your passport or ID card (optional if scanned)',
+    pitch_title: 'Viesa Pitch Editor',
+    pitch_subtitle: 'Live editor. Instantly create a prototype including database storage.',
+    pitch_hotel_name: 'Hotel Name',
+    pitch_hotel_slug: 'Hotel ID (Unique URL name)',
+    pitch_brand_color: 'Brand Color (Primary)',
+    pitch_typography: 'Typography / Font (Google Fonts)',
+    pitch_upload_logo: 'Upload Logo (File)',
+    pitch_btn_saving: 'Saving and uploading...',
+    pitch_btn_save: 'Save Prototype',
+    pitch_success_title: 'Successfully saved!',
+    pitch_success_btn: 'Open Prototype now!'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -104,7 +126,18 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_scan_here: 'Apunta la cámara aquí',
     kiosk_manual_button: 'O regístrese en este dispositivo',
     upload_id_title: 'Subir Documento de Identidad',
-    upload_id_desc: 'Tome una foto de su pasaporte o DNI (opcional si ya lo escaneó)'
+    upload_id_desc: 'Tome una foto de su pasaporte o DNI (opcional si ya lo escaneó)',
+    pitch_title: 'Viesa Pitch Editor',
+    pitch_subtitle: 'Editor en vivo. Cree un prototipo al instante incluyendo almacenamiento en base de datos.',
+    pitch_hotel_name: 'Nombre del Hotel',
+    pitch_hotel_slug: 'ID del Hotel (Nombre URL único)',
+    pitch_brand_color: 'Color de Marca (Principal)',
+    pitch_typography: 'Tipografía / Fuente (Google Fonts)',
+    pitch_upload_logo: 'Subir Logo (Archivo)',
+    pitch_btn_saving: 'Guardando y subiendo...',
+    pitch_btn_save: 'Guardar Prototipo',
+    pitch_success_title: '¡Guardado con éxito!',
+    pitch_success_btn: '¡Abre el prototipo ahora!'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
@@ -174,7 +207,18 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_scan_here: 'Punta la fotocamera qui',
     kiosk_manual_button: 'Oppure fai il check-in su questo dispositivo',
     upload_id_title: 'Carica Documento di Identità',
-    upload_id_desc: 'Scatta una foto del tuo passaporto o carta d\'identità (opzionale se scansionato)'
+    upload_id_desc: 'Scatta una foto del tuo passaporto o carta d\'identità (opzionale se scansionato)',
+    pitch_title: 'Viesa Pitch Editor',
+    pitch_subtitle: 'Live editor. Instantly create a prototype including database storage.',
+    pitch_hotel_name: 'Hotel Name',
+    pitch_hotel_slug: 'Hotel ID (Unique URL name)',
+    pitch_brand_color: 'Brand Color (Primary)',
+    pitch_typography: 'Typography / Font (Google Fonts)',
+    pitch_upload_logo: 'Upload Logo (File)',
+    pitch_btn_saving: 'Saving and uploading...',
+    pitch_btn_save: 'Save Prototype',
+    pitch_success_title: 'Successfully saved!',
+    pitch_success_btn: 'Open Prototype now!'
   },
   pt: {
     select_language: 'Selecione o seu idioma',

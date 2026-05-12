@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { saveHotelBranding } from '@/actions/hotelBranding';
+import { translations, Language } from '@/lib/translations';
 
 export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('Jet Hotels');
@@ -13,6 +14,14 @@ export default function PitchEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [savedLink, setSavedLink] = useState('');
   const [error, setError] = useState('');
+  const [language, setLanguage] = useState<Language>('nl');
+  const t = translations[language];
+
+  const languages = [
+    { code: 'en', short: 'EN' },
+    { code: 'nl', short: 'NL' },
+    { code: 'es', short: 'ES' }
+  ] as const;
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +80,7 @@ export default function PitchEditor() {
         setError(result.message);
       }
     } catch (err: any) {
-      setError(err.message || 'Er is een onbekende fout opgetreden.');
+      setError(err.message || 'Error saving hotel branding.');
     }
     setIsSaving(false);
   };
@@ -85,12 +94,26 @@ export default function PitchEditor() {
       <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start">
         {/* Left Side: Editor Form */}
         <div className="w-full xl:w-5/12 bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-gray-100 flex-shrink-0">
-          <h1 className="text-3xl font-black mb-2 text-gray-900">Viesa Pitch Editor</h1>
-          <p className="text-gray-500 mb-8">Live editor. Maak razendsnel een prototype aan inclusief database opslag.</p>
+          
+          {/* Language Selector */}
+          <div className="flex gap-2 mb-6 justify-end">
+            {languages.map((lang) => (
+              <button 
+                key={lang.code}
+                onClick={() => setLanguage(lang.code as Language)}
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${language === lang.code ? 'bg-gray-900 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+              >
+                {lang.short}
+              </button>
+            ))}
+          </div>
+
+          <h1 className="text-3xl font-black mb-2 text-gray-900">{t.pitch_title}</h1>
+          <p className="text-gray-500 mb-8">{t.pitch_subtitle}</p>
 
           <div className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Hotel Naam</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_hotel_name}</label>
             <input 
               type="text" 
               value={hotelName} 
@@ -100,7 +123,7 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Hotel ID (Unieke URL naam)</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_hotel_slug}</label>
             <input 
               type="text" 
               value={hotelSlug} 
@@ -110,7 +133,7 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Brand Color (Hoofdkleur)</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_brand_color}</label>
             <div className="flex gap-4 items-center">
               <input 
                 type="color" 
@@ -128,7 +151,7 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Typografie / Font (Google Fonts)</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_typography}</label>
             <select 
               value={font} 
               onChange={(e) => setFont(e.target.value)}
@@ -145,7 +168,7 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Upload Logo (Bestand)</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_upload_logo}</label>
             <div className="flex flex-col gap-4">
               <input 
                 type="file" 
@@ -169,19 +192,19 @@ export default function PitchEditor() {
           disabled={isSaving}
           className={`mt-8 w-full py-4 text-white rounded-xl font-bold text-lg transition-colors shadow-lg ${isSaving ? 'bg-gray-400' : 'bg-[#00d2d3] hover:bg-[#00b5b6]'}`}
         >
-          {isSaving ? 'Bezig met opslaan en uploaden...' : 'Sla Prototype Op'}
+          {isSaving ? t.pitch_btn_saving : t.pitch_btn_save}
         </button>
 
         {savedLink && (
           <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
-            <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">Succesvol opgeslagen!</p>
+            <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">{t.pitch_success_title}</p>
             <a 
               href={savedLink} 
               target="_blank" 
               rel="noopener noreferrer"
               className="block w-full text-center py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
             >
-              Open het Prototype nu!
+              {t.pitch_success_btn}
             </a>
             <p className="text-xs text-green-600/70 mt-4 text-center break-all">{savedLink}</p>
           </div>
