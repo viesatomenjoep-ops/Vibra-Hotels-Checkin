@@ -151,8 +151,8 @@ export default function PitchEditor() {
                       setColor(selected.primary_color || '#00d2d3');
                       setFont(selected.font_family || 'Inter');
                       setLogoBase64(selected.logo_url || '');
-                      setSavedLink('');
-                      setSavedSlug('');
+                      setSavedSlug(selected.slug || '');
+                      setSavedLink(`${window.location.origin}/kiosk/${selected.slug}`);
                     }
                   }
                 }}
