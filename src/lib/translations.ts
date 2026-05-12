@@ -32,7 +32,9 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Scan de code',
     kiosk_step3: 'Onderteken & Geniet',
     kiosk_scan_here: 'Scan hier met uw camera',
-    kiosk_manual_button: 'Of check direct in op dit apparaat'
+    kiosk_manual_button: 'Of check direct in op dit apparaat',
+    upload_id_title: 'Upload Identiteitsbewijs',
+    upload_id_desc: 'Maak een foto van uw paspoort of ID-kaart (optioneel indien gescand)'
   },
   en: {
     select_language: 'Select your language',
@@ -65,7 +67,9 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Scan the code',
     kiosk_step3: 'Sign & Relax',
     kiosk_scan_here: 'Point camera here',
-    kiosk_manual_button: 'Or check in on this device'
+    kiosk_manual_button: 'Or check in on this device',
+    upload_id_title: 'Upload Identity Document',
+    upload_id_desc: 'Take a photo of your passport or ID card (optional if scanned)'
   },
   es: {
     select_language: 'Seleccione su idioma',
@@ -98,7 +102,9 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Escanea el código',
     kiosk_step3: 'Firma y Relájate',
     kiosk_scan_here: 'Apunta la cámara aquí',
-    kiosk_manual_button: 'O regístrese en este dispositivo'
+    kiosk_manual_button: 'O regístrese en este dispositivo',
+    upload_id_title: 'Subir Documento de Identidad',
+    upload_id_desc: 'Tome una foto de su pasaporte o DNI (opcional si ya lo escaneó)'
   },
   de: {
     select_language: 'Wählen Sie Ihre Sprache',
@@ -131,7 +137,9 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Code scannen',
     kiosk_step3: 'Unterschreiben & Genießen',
     kiosk_scan_here: 'Kamera hier ausrichten',
-    kiosk_manual_button: 'Oder auf diesem Gerät einchecken'
+    kiosk_manual_button: 'Oder auf diesem Gerät einchecken',
+    upload_id_title: 'Ausweisdokument hochladen',
+    upload_id_desc: 'Machen Sie ein Foto von Ihrem Reisepass oder Personalausweis (optional, falls gescannt)'
   },
   it: {
     select_language: 'Seleziona la tua lingua',
@@ -164,7 +172,9 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Scansiona il codice',
     kiosk_step3: 'Firma e Rilassati',
     kiosk_scan_here: 'Punta la fotocamera qui',
-    kiosk_manual_button: 'Oppure fai il check-in su questo dispositivo'
+    kiosk_manual_button: 'Oppure fai il check-in su questo dispositivo',
+    upload_id_title: 'Carica Documento di Identità',
+    upload_id_desc: 'Scatta una foto del tuo passaporto o carta d\'identità (opzionale se scansionato)'
   },
   pt: {
     select_language: 'Selecione o seu idioma',
@@ -197,6 +207,8 @@ export const translations: Record<Language, Record<string, string>> = {
     kiosk_step2: 'Digitalize o código',
     kiosk_step3: 'Assine e Relaxe',
     kiosk_scan_here: 'Aponte a câmara aqui',
-    kiosk_manual_button: 'Ou faça o check-in neste dispositivo'
+    kiosk_manual_button: 'Ou faça o check-in neste dispositivo',
+    upload_id_title: 'Carregar Documento de Identidade',
+    upload_id_desc: 'Tire uma foto do seu passaporte ou cartão de cidadão (opcional se digitalizado)'
   }
 };

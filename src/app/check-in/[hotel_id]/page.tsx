@@ -185,6 +185,47 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
               </div>
 
               <div className="pt-4 border-t border-[#00d2d3]/20">
+                <h3 className="text-lg font-semibold text-[#00d2d3] mb-2">{t.upload_id_title}</h3>
+                <p className="text-sm text-[#00d2d3]/80 mb-4">{t.upload_id_desc}</p>
+                
+                {scannedData.idPhotoBase64 ? (
+                  <div className="relative w-full h-40 bg-cyan-50 rounded-lg overflow-hidden border-2 border-[#00d2d3]/40 flex items-center justify-center">
+                    <img src={scannedData.idPhotoBase64} alt="ID Document" className="h-full object-contain" />
+                    <button 
+                      type="button" 
+                      onClick={() => setScannedData({ ...scannedData, idPhotoBase64: '' })}
+                      className="absolute top-2 right-2 bg-white/80 p-2 rounded-full text-red-500 hover:bg-white shadow-sm"
+                    >
+                      <Eraser size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#00d2d3]/40 rounded-lg cursor-pointer bg-cyan-50/20 hover:bg-cyan-50/50 transition-colors">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Camera className="w-8 h-8 mb-2 text-[#00d2d3]/60" />
+                      <p className="text-sm text-[#00d2d3]/80 font-medium">Klik of Tik om een foto toe te voegen</p>
+                    </div>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      capture="environment" 
+                      className="hidden" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setScannedData({ ...scannedData, idPhotoBase64: reader.result });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div className="pt-4 border-t border-[#00d2d3]/20">
                 <div className="flex justify-between items-center mb-2">
                   <label className="block text-sm font-medium text-[#00d2d3]">{t.digital_signature}</label>
                   <button type="button" onClick={clearSignature} className="text-xs text-[#00d2d3] flex items-center gap-1 hover:text-[#00b5b6] transition-colors">
