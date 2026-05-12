@@ -47,13 +47,28 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
     // Capture snapshot from video
     let idPhotoBase64 = '';
     if (videoRef.current) {
+      const videoWidth = videoRef.current.videoWidth;
+      const videoHeight = videoRef.current.videoHeight;
+      
+      // The guide is 75% width, 25% height, centered.
+      const cropW = videoWidth * 0.75;
+      const cropH = videoHeight * 0.25;
+      const cropX = (videoWidth - cropW) / 2;
+      const cropY = (videoHeight - cropH) / 2;
+
       const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      canvas.width = cropW;
+      canvas.height = cropH;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-        idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+        // Draw only the cropped area
+        ctx.drawImage(videoRef.current, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+        
+        // Optional: Simple contrast enhancement for better OCR
+        ctx.filter = 'contrast(1.5) grayscale(1)';
+        ctx.drawImage(canvas, 0, 0);
+        
+        idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
       }
     }
 
@@ -65,37 +80,50 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
           const { data: { text } } = await worker.recognize(idPhotoBase64);
           await worker.terminate();
 
-          // Parse MRZ (Machine Readable Zone)
-          const lines = text.split('\n').map(l => l.replace(/\s+/g, ''));
+          // Tesseract might misread characters, so we normalize common errors in MRZ
+          const normalizedText = text.replace(/[«]/g, '<').replace(/\s+/g, '');
+          const lines = normalizedText.split('\n');
+          
           let firstName = '';
           let lastName = '';
           let country = '';
 
-          // Look for passport format (P<...) or ID card format (just names with <<)
-          let mrzNameLine = lines.find(l => (l.startsWith('P<') || l.startsWith('I<')) && l.includes('<<'));
-          if (!mrzNameLine) {
-            // For some ID cards, the name line doesn't start with P< or I< and has no digits
-            mrzNameLine = lines.find(l => l.includes('<<') && !/\d/.test(l));
+          // Find the line that has the most '<' characters (likely the name line)
+          let mrzNameLine = '';
+          let maxChevrons = 0;
+          
+          for (const line of lines) {
+            const chevronCount = (line.match(/</g) || []).length;
+            if (chevronCount > maxChevrons && chevronCount > 2) {
+              maxChevrons = chevronCount;
+              mrzNameLine = line;
+            }
           }
           
           if (mrzNameLine) {
-            // Extract names
-            let namesPart = mrzNameLine;
-            if (mrzNameLine.startsWith('P<') || mrzNameLine.startsWith('I<')) {
-              country = mrzNameLine.substring(2, 5).replace(/</g, '');
-              namesPart = mrzNameLine.substring(5);
+            let cleanLine = mrzNameLine;
+            // Remove common MRZ prefixes (P<, I<, A<, C<, V<, ID) and the following 3-letter country code
+            const prefixMatch = mrzNameLine.match(/^[PIACV]</) || mrzNameLine.startsWith('ID');
+            if (prefixMatch) {
+              if (mrzNameLine.length >= 5) {
+                country = mrzNameLine.substring(2, 5).replace(/</g, '');
+                cleanLine = mrzNameLine.substring(5);
+              }
+            } else if (mrzNameLine.length > 5 && mrzNameLine.includes('<<')) {
+              // Even if prefix is misread, strip the first 5 chars if they look like a country code block
+              const firstPart = mrzNameLine.split('<<')[0];
+              if (firstPart.length > 5 && (firstPart[2] !== '<' || firstPart[3] !== '<')) {
+                 cleanLine = mrzNameLine.substring(5);
+              }
             }
-            
-            const nameParts = namesPart.split('<<').filter(p => p.length > 0);
+
+            const nameParts = cleanLine.split(/<<+/).filter(p => p.length > 0 && !/^<+$/.test(p));
             
             if (nameParts.length > 0) {
-              lastName = nameParts[0].replace(/</g, ' ').trim();
-              // Clean up trailing < just in case
-              lastName = lastName.replace(/<+$/, '');
+              lastName = nameParts[0].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
             }
             if (nameParts.length > 1) {
-              firstName = nameParts[1].replace(/</g, ' ').trim();
-              firstName = firstName.replace(/<+$/, '');
+              firstName = nameParts[1].replace(/</g, ' ').replace(/[^A-Z ]/g, '').trim();
             }
           }
 
