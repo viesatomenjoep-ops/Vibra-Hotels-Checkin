@@ -171,7 +171,8 @@ export default function CheckInPage({
             <div className="space-y-8 text-center animate-in fade-in zoom-in-95 duration-500">
               <div className="flex flex-col items-center justify-center space-y-4 mb-8">
                 <img src={brandLogo} alt={brandName} className="h-20 w-auto mx-auto mb-2 object-contain" />
-                <p className="text-xl text-[var(--brand-color)] font-medium opacity-80">Please select your language</p>
+                <p className="text-xl text-[var(--brand-color)] font-bold">{t.header_subtitle}</p>
+                <p className="text-lg text-[var(--brand-color)]/80 font-medium opacity-80">{t.select_language}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
