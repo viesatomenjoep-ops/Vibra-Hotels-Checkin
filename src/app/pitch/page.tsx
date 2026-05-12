@@ -13,6 +13,7 @@ export default function PitchEditor() {
   const [color, setColor] = useState('#ff0000');
   const [font, setFont] = useState('Inter');
   const [logoBase64, setLogoBase64] = useState('');
+  const [logoFileName, setLogoFileName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [savedLink, setSavedLink] = useState('');
   const [savedSlug, setSavedSlug] = useState('');
@@ -38,6 +39,7 @@ export default function PitchEditor() {
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setLogoFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
         const img = new Image();
@@ -272,12 +274,20 @@ export default function PitchEditor() {
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_upload_logo}</label>
             <div className="flex flex-col gap-4">
-              <input 
-                type="file" 
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
-              />
+              <label className="w-full flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <div className="bg-[var(--brand-color)] text-white px-4 py-2 rounded-lg font-medium text-sm">
+                  {t.pitch_choose_file || 'Kies bestand'}
+                </div>
+                <span className="text-gray-500 text-sm truncate flex-1">
+                  {logoFileName || t.pitch_no_file_chosen || 'Geen bestand gekozen'}
+                </span>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                />
+              </label>
               {logoBase64 && (
                 <div className="p-4 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 h-32">
                   <img src={logoBase64} alt="Preview" className="max-h-full object-contain" />
