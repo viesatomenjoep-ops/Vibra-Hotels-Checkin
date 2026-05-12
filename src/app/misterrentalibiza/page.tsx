@@ -70,7 +70,7 @@ const content = {
 };
 
 // 100% Scooter Rental Specific Images
-const HERO_IMG = "https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=2000&auto=format&fit=crop"; // Classic Vespa parked
+const HERO_IMG = "/fleet/hero_scooter.png"; // AI Generated beautiful scooter riding near coast
 const FOOTER_IMG = "https://images.unsplash.com/photo-1620882319200-a548c40b8a10?q=80&w=2000&auto=format&fit=crop"; // Scooter near the beach
 
 // Full categorized fleet for Mr Rental Ibiza Prototype
@@ -79,25 +79,25 @@ const FLEET_CATEGORIES = [
     category: "Motos 50cc",
     desc: "Perfect for short trips around Ibiza town.",
     vehicles: [
-      { id: '1', name: 'Piaggio Typhoon', cc: '50cc', price: '25', customImg: 'https://images.unsplash.com/photo-1569429538356-8c4d29be59ce?q=80&w=800&auto=format&fit=crop' },
-      { id: '2', name: 'Sym Symphony', cc: '50cc', price: '25', customImg: 'https://images.unsplash.com/photo-1517721868356-02e0b57e0996?q=80&w=800&auto=format&fit=crop' }
+      { id: '1', name: 'Piaggio Typhoon', cc: '50cc', price: '25', customImg: '/fleet/piaggio_typhoon.png' },
+      { id: '2', name: 'Sym Symphony', cc: '50cc', price: '25', customImg: '/fleet/piaggio_typhoon.png' }
     ]
   },
   {
     category: "Motos 125cc",
     desc: "The most popular choice for exploring all beaches.",
     vehicles: [
-      { id: '3', name: 'Vespa Primavera', cc: '125cc', price: '45', customImg: 'https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=800&auto=format&fit=crop' },
-      { id: '4', name: 'Yamaha NMAX', cc: '125cc', price: '40', customImg: 'https://images.unsplash.com/photo-1620601323381-1979b1836c2f?q=80&w=800&auto=format&fit=crop' },
-      { id: '5', name: 'Honda PCX', cc: '125cc', price: '40', customImg: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop' }
+      { id: '3', name: 'Vespa Primavera', cc: '125cc', price: '45', customImg: '/fleet/vespa_primavera.png' },
+      { id: '4', name: 'Yamaha NMAX', cc: '125cc', price: '40', customImg: '/fleet/vespa_primavera.png' },
+      { id: '5', name: 'Honda PCX', cc: '125cc', price: '40', customImg: '/fleet/honda_pcx.png' }
     ]
   },
   {
     category: "Maxi Scooters (300cc+)",
     desc: "Maximum comfort for two passengers and longer rides.",
     vehicles: [
-      { id: '6', name: 'Vespa GTS 300', cc: '300cc', price: '65', customImg: 'https://images.unsplash.com/photo-1525048924045-31a89c31fa75?q=80&w=800&auto=format&fit=crop' },
-      { id: '7', name: 'Yamaha XMAX', cc: '300cc', price: '70', customImg: 'https://images.unsplash.com/photo-1582838706240-a36ff694c979?q=80&w=800&auto=format&fit=crop' }
+      { id: '6', name: 'Vespa GTS 300', cc: '300cc', price: '65', customImg: '/fleet/vespa_primavera.png' },
+      { id: '7', name: 'Yamaha XMAX', cc: '300cc', price: '70', customImg: '/fleet/honda_pcx.png' }
     ]
   },
   {
@@ -138,16 +138,16 @@ export default function MisterRentalLandingPage() {
   // Dynamic Fleet Grouping
   let rawFleet = dbBranding.scooter_fleet?.length > 0 ? dbBranding.scooter_fleet : [
     // --- SCOOTERS ---
-    { id: 's1', name: 'Vespa Primavera', cc: '125cc', price: '45', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=800&auto=format&fit=crop' },
-    { id: 's2', name: 'Honda PCX', cc: '125cc', price: '40', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop' },
-    { id: 's3', name: 'Piaggio Typhoon', cc: '50cc', price: '25', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1569429538356-8c4d29be59ce?q=80&w=800&auto=format&fit=crop' },
+    { id: 's1', name: 'Vespa Primavera', cc: '125cc', price: '45', category: 'scooter', customImg: '/fleet/vespa_primavera.png' },
+    { id: 's2', name: 'Honda PCX', cc: '125cc', price: '40', category: 'scooter', customImg: '/fleet/honda_pcx.png' },
+    { id: 's3', name: 'Piaggio Typhoon', cc: '50cc', price: '25', category: 'scooter', customImg: '/fleet/piaggio_typhoon.png' },
     // --- CARS ---
-    { id: 'c1', name: 'Fiat 500 Cabrio', cc: 'Auto', price: '75', category: 'car', customImg: 'https://images.unsplash.com/photo-1598462828358-1b203c9b7405?q=80&w=800&auto=format&fit=crop' },
-    { id: 'c2', name: 'Jeep Wrangler', cc: '4x4 Manual', price: '150', category: 'car', customImg: 'https://images.unsplash.com/photo-1554504101-7299a9a957a7?q=80&w=800&auto=format&fit=crop' },
-    { id: 'c3', name: 'Chrysler Grand Voyager', cc: '7 Seater Auto', price: '180', category: 'car', customImg: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=800&auto=format&fit=crop' },
-    { id: 'c4', name: 'Fiat Panda 169', cc: 'Manual', price: '50', category: 'car', customImg: 'https://images.unsplash.com/photo-1610425330368-9de5531d2797?q=80&w=800&auto=format&fit=crop' },
-    { id: 'c5', name: 'Smart Forfour 453', cc: 'Auto', price: '65', category: 'car', customImg: 'https://images.unsplash.com/photo-1548674981-cb6467ea5f0a?q=80&w=800&auto=format&fit=crop' },
-    { id: 'c6', name: 'Smart ForTwo 451', cc: 'Auto', price: '55', category: 'car', customImg: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800&auto=format&fit=crop' }
+    { id: 'c1', name: 'Fiat 500 Cabrio', cc: 'Auto', price: '75', category: 'car', customImg: '/fleet/fiat_500_cabrio.png' },
+    { id: 'c2', name: 'Jeep Wrangler', cc: '4x4 Manual', price: '150', category: 'car', customImg: '/fleet/jeep_wrangler.png' },
+    { id: 'c3', name: 'Chrysler Grand Voyager', cc: '7 Seater Auto', price: '180', category: 'car', customImg: '/fleet/chrysler_grand_voyager.png' },
+    { id: 'c4', name: 'Fiat Panda 169', cc: 'Manual', price: '50', category: 'car', customImg: '/fleet/fiat_panda_169.png' },
+    { id: 'c5', name: 'Smart Forfour 453', cc: 'Auto', price: '65', category: 'car', customImg: '/fleet/smart_forfour_453.png' },
+    { id: 'c6', name: 'Smart ForTwo 451', cc: 'Auto', price: '55', category: 'car', customImg: '/fleet/smart_fortwo_451.png' }
   ];
 
   // Group by category ('scooter' vs 'car')
