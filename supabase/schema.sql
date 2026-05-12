@@ -36,8 +36,9 @@ CREATE TABLE checkins (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Voeg business type toe aan hotels voor de scooter uitbreiding
+-- 4. Voeg business type en scooter vloot toe aan hotels
 ALTER TABLE hotels ADD COLUMN IF NOT EXISTS business_type TEXT DEFAULT 'hotel';
+ALTER TABLE hotels ADD COLUMN IF NOT EXISTS scooter_fleet JSONB DEFAULT '[]'::jsonb;
 
 -- 5. Maak de Scooter Bookings tabel
 CREATE TABLE scooter_bookings (

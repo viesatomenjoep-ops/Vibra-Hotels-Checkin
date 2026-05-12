@@ -29,6 +29,8 @@ export async function saveHotelBranding(formData: FormData) {
     const color = formData.get('color') as string;
     const font_family = formData.get('font_family') as string;
     const logoBase64 = formData.get('logoBase64') as string;
+    const business_type = formData.get('business_type') as string || 'hotel';
+    const scooter_fleet = formData.get('scooter_fleet') ? JSON.parse(formData.get('scooter_fleet') as string) : [];
     
     let logoUrl = '/vibra-logo.svg'; // Default
     
@@ -53,7 +55,9 @@ export async function saveHotelBranding(formData: FormData) {
         name, 
         primary_color: color, 
         logo_url: logoUrl,
-        font_family 
+        font_family,
+        business_type,
+        scooter_fleet
       }, { onConflict: 'slug' });
 
     if (error) throw error;
@@ -70,19 +74,21 @@ export async function getHotelBranding(slug: string) {
     const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('hotels')
-      .select('name, primary_color, logo_url, font_family')
+      .select('name, primary_color, logo_url, font_family, business_type, scooter_fleet')
       .eq('slug', slug)
       .single();
       
     if (error || !data) {
-      return { name: null, color: null, logo: null, font: null };
+      return { name: null, color: null, logo: null, font: null, business_type: 'hotel', scooter_fleet: [] };
     }
     
     return {
       name: data.name,
       color: data.primary_color,
       logo: data.logo_url,
-      font: data.font_family
+      font: data.font_family,
+      business_type: data.business_type || 'hotel',
+      scooter_fleet: data.scooter_fleet || []
     };
   } catch (e) {
     return { name: null, color: null, logo: null, font: null };

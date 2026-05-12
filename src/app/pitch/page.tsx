@@ -11,6 +11,10 @@ export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('');
   const [hotelSlug, setHotelSlug] = useState('');
   const [businessType, setBusinessType] = useState<'hotel' | 'scooter'>('hotel');
+  const [scooterFleet, setScooterFleet] = useState<Array<{id: string, name: string, price: string, cc: string}>>([
+    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35' },
+    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28' }
+  ]);
   const [color, setColor] = useState('#00d2d3');
   const [font, setFont] = useState('Inter');
   const [logoBase64, setLogoBase64] = useState('');
@@ -90,6 +94,9 @@ export default function PitchEditor() {
       formData.append('name', hotelName);
       formData.append('slug', hotelSlug);
       formData.append('business_type', businessType);
+      if (businessType === 'scooter') {
+        formData.append('scooter_fleet', JSON.stringify(scooterFleet));
+      }
       formData.append('color', color);
       formData.append('font_family', font);
       formData.append('logoBase64', logoBase64);
@@ -159,6 +166,9 @@ export default function PitchEditor() {
                       setHotelName(selected.name || '');
                       setHotelSlug(selected.slug || '');
                       setBusinessType(selected.business_type || 'hotel');
+                      if (selected.business_type === 'scooter' && selected.scooter_fleet) {
+                        setScooterFleet(selected.scooter_fleet);
+                      }
                       setColor(selected.primary_color || '#00d2d3');
                       setFont(selected.font_family || 'Inter');
                       setLogoBase64(selected.logo_url || '');
@@ -307,6 +317,67 @@ export default function PitchEditor() {
             </select>
           </div>
 
+          {businessType === 'scooter' && (
+            <div className="pt-4 border-t border-gray-100 mt-4">
+              <label className="block text-sm font-bold text-gray-700 mb-4">Scooter Vloot (Aanbod)</label>
+              <div className="space-y-3 mb-4">
+                {scooterFleet.map((scooter, idx) => (
+                  <div key={scooter.id} className="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
+                    <input 
+                      type="text" 
+                      value={scooter.name} 
+                      onChange={(e) => {
+                        const newFleet = [...scooterFleet];
+                        newFleet[idx].name = e.target.value;
+                        setScooterFleet(newFleet);
+                      }}
+                      className="flex-1 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                      placeholder="Scooter Naam"
+                    />
+                    <input 
+                      type="text" 
+                      value={scooter.cc} 
+                      onChange={(e) => {
+                        const newFleet = [...scooterFleet];
+                        newFleet[idx].cc = e.target.value;
+                        setScooterFleet(newFleet);
+                      }}
+                      className="w-20 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                      placeholder="CC"
+                    />
+                    <input 
+                      type="text" 
+                      value={scooter.price} 
+                      onChange={(e) => {
+                        const newFleet = [...scooterFleet];
+                        newFleet[idx].price = e.target.value;
+                        setScooterFleet(newFleet);
+                      }}
+                      className="w-20 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                      placeholder="Prijs/dag"
+                    />
+                    <button 
+                      onClick={() => {
+                        setScooterFleet(scooterFleet.filter(s => s.id !== scooter.id));
+                      }}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    >
+                      ❌
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button 
+                onClick={() => {
+                  setScooterFleet([...scooterFleet, { id: Math.random().toString(), name: '', cc: '', price: '' }]);
+                }}
+                className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 font-bold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                + Voeg Scooter Toe
+              </button>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_upload_logo}</label>
             <div className="flex flex-col gap-4">
@@ -347,7 +418,7 @@ export default function PitchEditor() {
           <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
             <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">{t.pitch_success_title}</p>
             <Link 
-              href={`/kiosk/${savedSlug}`}
+              href={businessType === 'scooter' ? `/scooters/${savedSlug}` : `/kiosk/${savedSlug}`}
               className="block w-full text-center py-4 mb-3 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
             >
               {t.pitch_success_btn}
@@ -456,24 +527,19 @@ export default function PitchEditor() {
             <div className="p-8 bg-gray-50">
               <h2 className="text-xl font-black text-gray-900 mb-6 text-center">Select your scooter</h2>
               <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                  <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
-                  <h3 className="font-bold text-gray-900">Vespa Primavera 125cc</h3>
-                  <p className="text-sm text-gray-500 mb-4">Includes 2 helmets & insurance</p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-black text-lg" style={{ color: color }}>€35/day</span>
-                    <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
+                {scooterFleet.map((scooter) => (
+                  <div key={scooter.id} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div>
+                      <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🛵</div>
+                      <h3 className="font-bold text-gray-900">{scooter.name}</h3>
+                      <p className="text-sm text-gray-500 mb-4">{scooter.cc} • 2 helmets</p>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="font-black text-lg" style={{ color: color }}>€{scooter.price}/day</span>
+                      <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
+                    </div>
                   </div>
-                </div>
-                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                  <div className="h-32 bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-4xl">🏍️</div>
-                  <h3 className="font-bold text-gray-900">Honda PCX 125cc</h3>
-                  <p className="text-sm text-gray-500 mb-4">Extra storage space</p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-black text-lg" style={{ color: color }}>€28/day</span>
-                    <button className="px-4 py-2 text-white text-sm font-bold rounded-lg" style={{ backgroundColor: color }}>Reserve</button>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
