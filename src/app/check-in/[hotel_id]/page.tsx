@@ -156,7 +156,7 @@ export default function CheckInPage({
                 <ChevronLeft size={28} className="text-white" />
               </button>
             )}
-            {brandLogo.endsWith('.svg') || brandLogo.includes('vibra') ? (
+            {brandLogo === '/vibra-logo.svg' ? (
               <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto brightness-0 invert object-contain" />
             ) : (
               <div className="bg-white p-2 rounded-xl inline-flex justify-center items-center shadow-sm mx-auto">
@@ -181,7 +181,7 @@ export default function CheckInPage({
               </Link>
               <div className="flex flex-col items-center justify-center space-y-4 mb-8">
                 <div className="bg-[var(--brand-color)] p-5 rounded-3xl shadow-md mb-2">
-                  <img src={brandLogo} alt={brandName} className={`h-20 w-auto mx-auto object-contain ${(brandLogo.endsWith('.svg') || brandLogo.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
+                  <img src={brandLogo} alt={brandName} className={`h-20 w-auto mx-auto object-contain ${brandLogo === '/vibra-logo.svg' ? 'brightness-0 invert' : ''}`} />
                 </div>
                 <p className="text-xl text-[var(--brand-color)] font-bold">{t.header_subtitle}</p>
                 <p className="text-lg text-[var(--brand-color)]/80 font-medium opacity-80">{t.select_language}</p>

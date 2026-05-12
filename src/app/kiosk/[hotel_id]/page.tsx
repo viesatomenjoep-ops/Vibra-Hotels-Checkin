@@ -94,7 +94,7 @@ export default function KioskPage({
         {/* Left Side: Branding & Instructions */}
         <div className="flex-1 p-12 md:p-16 flex flex-col justify-center bg-[var(--brand-color)] text-white">
           <div className="bg-white p-4 rounded-2xl inline-block mb-8 self-start shadow-md">
-            <img src={brandLogo} alt={brandName} className="h-20 w-auto object-contain" />
+            <img src={brandLogo} alt={brandName} className={`h-20 w-auto object-contain ${brandLogo === '/vibra-logo.svg' ? 'brightness-0 invert' : ''}`} />
           </div>
           <h2 className="text-3xl font-bold mb-4">{t.kiosk_title}</h2>
           <p className="text-xl text-white/90 mb-10 leading-relaxed font-medium">
