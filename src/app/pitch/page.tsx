@@ -243,19 +243,21 @@ export default function PitchEditor() {
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
-              {businessType === 'scooter' ? 'Scooterbedrijf Naam' : t.pitch_hotel_name}
+              {businessType === 'scooter' ? t.pitch_scooter_name : t.pitch_hotel_name}
             </label>
             <input 
               type="text" 
               value={hotelName} 
               onChange={(e) => setHotelName(e.target.value)}
-              placeholder={businessType === 'scooter' ? 'Bijv. Ibiza Scooters' : 'Bijv. Jet Hotels'}
+              placeholder={businessType === 'scooter' ? t.pitch_scooter_placeholder : t.pitch_hotel_placeholder}
               className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_hotel_slug}</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              {businessType === 'scooter' ? t.pitch_scooter_slug : t.pitch_hotel_slug}
+            </label>
             <input 
               type="text" 
               value={hotelSlug} 
