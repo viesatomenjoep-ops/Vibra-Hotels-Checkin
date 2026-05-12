@@ -11,9 +11,9 @@ export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('');
   const [hotelSlug, setHotelSlug] = useState('');
   const [businessType, setBusinessType] = useState<'hotel' | 'scooter'>('hotel');
-  const [scooterFleet, setScooterFleet] = useState<Array<{id: string, name: string, price: string, cc: string, image: string}>>([
-    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35', image: '' },
-    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28', image: '' }
+  const [scooterFleet, setScooterFleet] = useState<Array<{id: string, name: string, price: string, cc: string, image: string, category?: string}>>([
+    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35', image: '', category: 'scooter' },
+    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28', image: '', category: 'scooter' }
   ]);
   const [color, setColor] = useState('#00d2d3');
   const [font, setFont] = useState('Inter');
@@ -404,6 +404,18 @@ export default function PitchEditor() {
                       </button>
                     </div>
                     <div className="flex gap-2 items-center">
+                      <select
+                        value={scooter.category || 'scooter'}
+                        onChange={(e) => {
+                          const newFleet = [...scooterFleet];
+                          newFleet[idx].category = e.target.value;
+                          setScooterFleet(newFleet);
+                        }}
+                        className="w-1/3 p-2 text-sm bg-white border border-gray-200 rounded focus:outline-none"
+                      >
+                        <option value="scooter">🛵 Scooter</option>
+                        <option value="car">🚗 Auto / Car</option>
+                      </select>
                       <input 
                         type="text" 
                         value={scooter.cc} 
@@ -443,11 +455,11 @@ export default function PitchEditor() {
               </div>
               <button 
                 onClick={() => {
-                  setScooterFleet([...scooterFleet, { id: Math.random().toString(), name: '', cc: '', price: '', image: '' }]);
+                  setScooterFleet([...scooterFleet, { id: Math.random().toString(), name: '', cc: '', price: '', image: '', category: 'scooter' }]);
                 }}
                 className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 font-bold rounded-lg hover:bg-gray-50 transition-colors"
               >
-                {t.pitch_scooter_add_btn}
+                + Voeg Voertuig Toe
               </button>
             </div>
           )}

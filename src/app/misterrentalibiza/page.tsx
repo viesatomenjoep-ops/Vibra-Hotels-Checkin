@@ -135,6 +135,43 @@ export default function MisterRentalLandingPage() {
   const font = dbBranding.font || 'Playfair Display'; 
   const encodedFont = font.replace(/ /g, '+');
 
+  // Dynamic Fleet Grouping
+  let rawFleet = dbBranding.scooter_fleet?.length > 0 ? dbBranding.scooter_fleet : [
+    // --- SCOOTERS ---
+    { id: 's1', name: 'Vespa Primavera', cc: '125cc', price: '45', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=800&auto=format&fit=crop' },
+    { id: 's2', name: 'Honda PCX', cc: '125cc', price: '40', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800&auto=format&fit=crop' },
+    { id: 's3', name: 'Piaggio Typhoon', cc: '50cc', price: '25', category: 'scooter', customImg: 'https://images.unsplash.com/photo-1569429538356-8c4d29be59ce?q=80&w=800&auto=format&fit=crop' },
+    // --- CARS ---
+    { id: 'c1', name: 'Fiat 500 Cabrio', cc: 'Auto', price: '75', category: 'car', customImg: 'https://images.unsplash.com/photo-1598462828358-1b203c9b7405?q=80&w=800&auto=format&fit=crop' },
+    { id: 'c2', name: 'Jeep Wrangler', cc: '4x4 Manual', price: '150', category: 'car', customImg: 'https://images.unsplash.com/photo-1554504101-7299a9a957a7?q=80&w=800&auto=format&fit=crop' },
+    { id: 'c3', name: 'Chrysler Grand Voyager', cc: '7 Seater Auto', price: '180', category: 'car', customImg: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=800&auto=format&fit=crop' },
+    { id: 'c4', name: 'Fiat Panda 169', cc: 'Manual', price: '50', category: 'car', customImg: 'https://images.unsplash.com/photo-1610425330368-9de5531d2797?q=80&w=800&auto=format&fit=crop' },
+    { id: 'c5', name: 'Smart Forfour 453', cc: 'Auto', price: '65', category: 'car', customImg: 'https://images.unsplash.com/photo-1548674981-cb6467ea5f0a?q=80&w=800&auto=format&fit=crop' },
+    { id: 'c6', name: 'Smart ForTwo 451', cc: 'Auto', price: '55', category: 'car', customImg: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800&auto=format&fit=crop' }
+  ];
+
+  // Group by category ('scooter' vs 'car')
+  const grouped = rawFleet.reduce((acc: any, vehicle: any) => {
+    const cat = vehicle.category || 'scooter';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(vehicle);
+    return acc;
+  }, {});
+
+  const dynamicCategories = [];
+  if (grouped['scooter']) {
+    dynamicCategories.push({
+      categoryTitle: lang === 'nl' ? 'Scooters & Motoren' : (lang === 'en' ? 'Scooters & Motorcycles' : 'Scooters y Motos'),
+      vehicles: grouped['scooter']
+    });
+  }
+  if (grouped['car']) {
+    dynamicCategories.push({
+      categoryTitle: lang === 'nl' ? 'Auto\'s' : (lang === 'en' ? 'Cars' : 'Coches'),
+      vehicles: grouped['car']
+    });
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFBF7]" style={{ fontFamily: font }}>
       <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap`} rel="stylesheet" />
@@ -222,19 +259,18 @@ export default function MisterRentalLandingPage() {
           </div>
           
           <div className="space-y-32">
-            {FLEET_CATEGORIES.map((cat, catIdx) => (
+            {dynamicCategories.map((cat, catIdx) => (
               <div key={catIdx} className="border-t border-gray-200 pt-16">
                 <div className="mb-12">
-                  <h3 className="text-3xl font-bold text-gray-900 mb-2">{cat.category}</h3>
-                  <p className="text-gray-500 font-['Montserrat']">{cat.desc}</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-2">{cat.categoryTitle}</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                  {cat.vehicles.map((scooter: any) => (
+                  {cat.vehicles.map((scooter: any, idx: number) => (
                     <div key={scooter.id} className="group cursor-pointer">
                       <div className="relative h-[300px] md:h-[400px] mb-8 overflow-hidden rounded-[2rem] shadow-lg">
                         <img 
-                          src={scooter.customImg} 
+                          src={scooter.customImg || scooter.image || 'https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=800&auto=format&fit=crop'} 
                           alt={scooter.name} 
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" 
                         />
