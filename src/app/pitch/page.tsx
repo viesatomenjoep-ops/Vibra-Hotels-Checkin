@@ -499,7 +499,7 @@ export default function PitchEditor() {
                 {t.pitch_success_btn || 'Open Prototype'}
               </Link>
               
-              {savedSlug.toLowerCase().includes('misterrental') && (
+              {savedSlug.toLowerCase().includes('mister') && (
                 <Link 
                   href={`/misterrentalibiza`}
                   className="flex-1 block text-center py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md"
