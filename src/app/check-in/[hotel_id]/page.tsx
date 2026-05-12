@@ -74,11 +74,16 @@ export default function CheckInPage({
       formData.append('idPhoto', scannedData.idPhotoBase64);
     }
 
-    const result = await processCheckin(formData);
-    if (result.success) {
-      setStep(4); // Success step
-    } else {
-      setError(result.message);
+    try {
+      const result = await processCheckin(formData);
+      if (result.success) {
+        setStep(4); // Success step
+      } else {
+        setError(result.message);
+      }
+    } catch (err: any) {
+      console.error("Client Error during check-in:", err);
+      setError("Netwerkfout of Server Timeout. Controleer uw verbinding en probeer het opnieuw.");
     }
     setIsSubmitting(false);
   };

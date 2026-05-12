@@ -49,13 +49,15 @@ export async function processCheckin(formData: FormData) {
       actualHotelId = newHotel.id;
     }
 
-    // 2. Upload handtekening naar Cloudinary
-    const signatureUrl = await uploadSignature(base64Signature, actualHotelId);
-
-    let idPhotoUrl = null;
+    // 2. Upload handtekening en evt paspoortfoto parallel naar Cloudinary (voorkomt Vercel 10s timeout)
+    const uploadTasks: Promise<string>[] = [uploadSignature(base64Signature, actualHotelId)];
     if (idPhotoBase64) {
-      idPhotoUrl = await uploadIdPhoto(idPhotoBase64, actualHotelId);
+      uploadTasks.push(uploadIdPhoto(idPhotoBase64, actualHotelId));
     }
+
+    const uploadResults = await Promise.all(uploadTasks);
+    const signatureUrl = uploadResults[0];
+    const idPhotoUrl = idPhotoBase64 ? uploadResults[1] : null;
 
     // 3. Maak Gast aan in Supabase
     const { data: guestData, error: guestError } = await supabase
