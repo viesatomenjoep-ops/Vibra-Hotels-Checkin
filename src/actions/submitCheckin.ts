@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js';
-import { uploadSignature } from '@/lib/cloudinary';
+import { uploadSignature, uploadIdPhoto } from '@/lib/cloudinary';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,6 +19,7 @@ export async function processCheckin(formData: FormData) {
   const zipcode = formData.get('zipcode') as string;
   const country = formData.get('country') as string;
   const base64Signature = formData.get('signature') as string;
+  const idPhotoBase64 = formData.get('idPhoto') as string | null;
 
   try {
     // 1. Zoek of maak het hotel aan op basis van de slug ('vibra-algarb')
@@ -49,6 +50,11 @@ export async function processCheckin(formData: FormData) {
     // 2. Upload handtekening naar Cloudinary
     const signatureUrl = await uploadSignature(base64Signature, actualHotelId);
 
+    let idPhotoUrl = null;
+    if (idPhotoBase64) {
+      idPhotoUrl = await uploadIdPhoto(idPhotoBase64, actualHotelId);
+    }
+
     // 3. Maak Gast aan in Supabase
     const { data: guestData, error: guestError } = await supabase
       .from('guests')
@@ -74,6 +80,7 @@ export async function processCheckin(formData: FormData) {
         hotel_id: actualHotelId,
         guest_id: guestData.id,
         signature_url: signatureUrl,
+        id_photo_url: idPhotoUrl,
         status: 'completed'
       }]);
 

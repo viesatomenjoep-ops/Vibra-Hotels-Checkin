@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Camera, RefreshCw } from 'lucide-react';
 
 interface ScannerProps {
-  onScanComplete: (data: { firstName: string, lastName: string, country: string }) => void;
+  onScanComplete: (data: { firstName: string, lastName: string, country: string, idPhotoBase64?: string }) => void;
   onCancel: () => void;
   t: Record<string, string>;
 }
@@ -43,14 +43,29 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
 
   const captureAndScan = () => {
     setIsScanning(true);
+    
+    // Capture snapshot from video
+    let idPhotoBase64 = '';
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        idPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+      }
+    }
+
     // Simulate OCR processing time (2 seconds)
     // In a production app, you would send the canvas snapshot to an OCR API here.
     setTimeout(() => {
       setIsScanning(false);
       onScanComplete({
-        firstName: 'John',
-        lastName: 'Doe',
-        country: 'Netherlands'
+        firstName: '', // Real MRZ data would go here
+        lastName: '',
+        country: '',
+        idPhotoBase64
       });
     }, 2000);
   };

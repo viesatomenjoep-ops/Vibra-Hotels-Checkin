@@ -29,6 +29,7 @@ CREATE TABLE checkins (
   guest_id UUID REFERENCES guests(id) ON DELETE CASCADE,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'cancelled')),
   signature_url TEXT, -- De Cloudinary URL van de handtekening
+  id_photo_url TEXT, -- De Cloudinary URL van de paspoort/ID foto
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

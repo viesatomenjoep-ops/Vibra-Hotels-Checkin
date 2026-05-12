@@ -21,3 +21,18 @@ export async function uploadSignature(base64Image: string, hotelId: string): Pro
     throw new Error('Uploaden van handtekening mislukt');
   }
 }
+
+export async function uploadIdPhoto(base64Image: string, hotelId: string): Promise<string> {
+  try {
+    const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+      folder: `viesa/id_photos/${hotelId}`,
+      format: 'jpg',
+      quality: 'auto',
+      fetch_format: 'auto',
+    });
+    return uploadResponse.secure_url;
+  } catch (error) {
+    console.error('Cloudinary Upload Error (ID Photo):', error);
+    throw new Error('Uploaden van ID bewijs mislukt');
+  }
+}

@@ -19,7 +19,7 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
   const [language, setLanguage] = useState<Language>('en');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [scannedData, setScannedData] = useState<{ firstName?: string, lastName?: string, country?: string }>({});
+  const [scannedData, setScannedData] = useState<any>({ firstName: '', lastName: '', country: '', idPhotoBase64: '' });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sigCanvas = useRef<any>(null);
@@ -57,6 +57,10 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
     // Get actual base64 signature
     const signatureBase64 = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
     formData.append('signature', signatureBase64);
+    
+    if (scannedData.idPhotoBase64) {
+      formData.append('idPhoto', scannedData.idPhotoBase64);
+    }
 
     const result = await processCheckin(formData);
     if (result.success) {
