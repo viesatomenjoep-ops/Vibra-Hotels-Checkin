@@ -159,32 +159,28 @@ export default function CheckInPage({
             {brandLogo === '/vibra-logo.svg' ? (
               <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto brightness-0 invert object-contain" />
             ) : (
-              <div className="bg-white p-2 rounded-xl inline-flex justify-center items-center shadow-sm mx-auto">
-                <img src={brandLogo} alt={brandName} className="h-10 w-auto object-contain" />
-              </div>
+              <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto object-contain" />
             )}
             <p className="mt-2 text-lg opacity-90">{t.header_subtitle}</p>
           </div>
         )}
 
         {/* Content Area */}
-        <div className={step === 0 ? "p-8 md:p-16 bg-gradient-to-br from-white to-gray-50" : "p-6 md:p-10"}>
+        <div className={step === 0 ? "p-8 md:p-16 bg-[var(--brand-color)] text-white" : "p-6 md:p-10"}>
 
           {step === 0 && (
             <div className="space-y-8 text-center animate-in fade-in zoom-in-95 duration-500 relative">
               <Link 
                 href={`/kiosk/${hotel_id}`}
-                className="absolute -top-4 -left-4 md:-top-8 md:-left-8 p-3 rounded-full md:rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold transition-colors flex items-center gap-1"
+                className="absolute -top-4 -left-4 md:-top-8 md:-left-8 p-3 rounded-full md:rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-colors flex items-center gap-1 border border-white/20"
                 title="Back to Kiosk"
               >
                 <ChevronLeft size={24} /> <span className="hidden md:inline">Back</span>
               </Link>
               <div className="flex flex-col items-center justify-center space-y-4 mb-8">
-                <div className="bg-[var(--brand-color)] p-5 rounded-3xl shadow-md mb-2">
-                  <img src={brandLogo} alt={brandName} className={`h-20 w-auto mx-auto object-contain ${brandLogo === '/vibra-logo.svg' ? 'brightness-0 invert' : ''}`} />
-                </div>
-                <p className="text-xl text-[var(--brand-color)] font-bold">{t.header_subtitle}</p>
-                <p className="text-lg text-[var(--brand-color)]/80 font-medium opacity-80">{t.select_language}</p>
+                <img src={brandLogo} alt={brandName} className={`h-24 w-auto mx-auto object-contain ${brandLogo === '/vibra-logo.svg' ? 'brightness-0 invert' : ''}`} />
+                <p className="text-xl font-bold">{t.header_subtitle}</p>
+                <p className="text-lg text-white/80 font-medium opacity-80">{t.select_language}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -192,12 +188,12 @@ export default function CheckInPage({
                   <button
                     key={lang.code}
                     onClick={() => selectLanguage(lang.code as Language)}
-                    className="flex items-center gap-5 p-4 w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,210,211,0.1)] hover:shadow-[0_8px_30px_rgb(0,210,211,0.3)] hover:-translate-y-1 transition-all duration-300 border border-[var(--brand-color)]/20 hover:border-[var(--brand-color)]/80 group"
+                    className="flex items-center gap-5 p-4 w-full bg-white/10 rounded-2xl hover:bg-white/20 hover:-translate-y-1 transition-all duration-300 border border-white/20 hover:border-white/80 group"
                   >
-                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-cyan-50 shadow-inner group-hover:bg-[var(--brand-color)] group-hover:text-white transition-all duration-300 flex-shrink-0 border border-[var(--brand-color)]/20">
+                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-white/20 text-white shadow-inner group-hover:bg-white group-hover:text-[var(--brand-color)] transition-all duration-300 flex-shrink-0 border border-white/30">
                       <span className="text-xl font-black">{lang.short}</span>
                     </div>
-                    <span className="text-xl font-bold text-[var(--brand-color)]">{lang.label}</span>
+                    <span className="text-xl font-bold text-white">{lang.label}</span>
                   </button>
                 ))}
               </div>
