@@ -80,8 +80,8 @@ export async function processCheckin(formData: FormData) {
     if (checkinError) throw checkinError;
 
     return { success: true, message: 'Check-in succesvol afgerond.' };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: 'Er is een fout opgetreden.' };
+  } catch (error: any) {
+    console.error('SERVER ACTION ERROR:', error);
+    return { success: false, message: `Fout: ${error?.message || error || 'Onbekende fout'}` };
   }
 }
