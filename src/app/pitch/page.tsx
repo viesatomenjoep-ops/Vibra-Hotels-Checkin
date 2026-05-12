@@ -25,6 +25,7 @@ export default function PitchEditor() {
   const [error, setError] = useState('');
   const [language, setLanguage] = useState<Language>('nl');
   const [savedPrototypes, setSavedPrototypes] = useState<any[]>([]);
+  const [activeDropdown, setActiveDropdown] = useState<'hotel' | 'scooter' | null>(null);
   const t = translations[language];
 
   useEffect(() => {
@@ -183,53 +184,66 @@ export default function PitchEditor() {
           {/* Prototype Selector */}
           {savedPrototypes.length > 0 && (
             <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-              <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_select_prototype}</label>
-              <select 
-                className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium mb-4"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === 'new') {
-                    setHotelName('');
-                    setHotelSlug('');
-                    setColor('#00d2d3');
-                    setFont('Inter');
-                    setLogoBase64('');
-                    setSavedLink('');
-                    setSavedSlug('');
-                  } else {
-                    const selected = savedPrototypes.find(p => p.slug === val);
-                    if (selected) {
-                      setHotelName(selected.name || '');
-                      setHotelSlug(selected.slug || '');
-                      setBusinessType(selected.business_type || 'hotel');
-                      if (selected.business_type === 'scooter' && selected.scooter_fleet) {
-                        setScooterFleet(selected.scooter_fleet);
-                      }
-                      setColor(selected.primary_color || '#00d2d3');
-                      setFont(selected.font_family || 'Inter');
-                      setLogoBase64(selected.logo_url || '');
-                      setSavedSlug(selected.slug || '');
-                      setSavedLink(`${window.location.origin}/kiosk/${selected.slug}`);
-                    }
-                  }
-                }}
-              >
-                <option value="">{t.pitch_choose_prototype || '-- Kies een prototype --'}</option>
+              <div className="flex flex-col gap-4 mb-4">
                 {savedPrototypes.filter(p => p.business_type !== 'scooter').length > 0 && (
-                  <optgroup label="🏨 Hotels">
-                    {savedPrototypes.filter(p => p.business_type !== 'scooter').map(p => (
-                      <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
-                    ))}
-                  </optgroup>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">🏨 Selecteer Hotel</label>
+                    <select 
+                      className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium"
+                      value={activeDropdown === 'hotel' ? savedSlug : ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setActiveDropdown('hotel');
+                        if (val === 'new') {
+                          setHotelName(''); setHotelSlug(''); setColor('#00d2d3'); setFont('Inter'); setLogoBase64(''); setSavedLink(''); setSavedSlug('');
+                        } else {
+                          const selected = savedPrototypes.find(p => p.slug === val);
+                          if (selected) {
+                            setHotelName(selected.name || ''); setHotelSlug(selected.slug || ''); setBusinessType('hotel');
+                            setColor(selected.primary_color || '#00d2d3'); setFont(selected.font_family || 'Inter'); setLogoBase64(selected.logo_url || '');
+                            setSavedSlug(selected.slug || ''); setSavedLink(`${window.location.origin}/kiosk/${selected.slug}`);
+                          }
+                        }
+                      }}
+                    >
+                      <option value="">-- Kies Hotel --</option>
+                      {savedPrototypes.filter(p => p.business_type !== 'scooter').map(p => (
+                        <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
+                      ))}
+                    </select>
+                  </div>
                 )}
+
                 {savedPrototypes.filter(p => p.business_type === 'scooter').length > 0 && (
-                  <optgroup label="🛵 Scooter Rentals">
-                    {savedPrototypes.filter(p => p.business_type === 'scooter').map(p => (
-                      <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
-                    ))}
-                  </optgroup>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">🛵 Selecteer Scooter Rental</label>
+                    <select 
+                      className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium"
+                      value={activeDropdown === 'scooter' ? savedSlug : ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setActiveDropdown('scooter');
+                        if (val === 'new') {
+                          setHotelName(''); setHotelSlug(''); setColor('#00d2d3'); setFont('Inter'); setLogoBase64(''); setSavedLink(''); setSavedSlug('');
+                        } else {
+                          const selected = savedPrototypes.find(p => p.slug === val);
+                          if (selected) {
+                            setHotelName(selected.name || ''); setHotelSlug(selected.slug || ''); setBusinessType('scooter');
+                            if (selected.scooter_fleet) setScooterFleet(selected.scooter_fleet);
+                            setColor(selected.primary_color || '#00d2d3'); setFont(selected.font_family || 'Inter'); setLogoBase64(selected.logo_url || '');
+                            setSavedSlug(selected.slug || ''); setSavedLink(`${window.location.origin}/kiosk/${selected.slug}`);
+                          }
+                        }
+                      }}
+                    >
+                      <option value="">-- Kies Scooter Bedrijf --</option>
+                      {savedPrototypes.filter(p => p.business_type === 'scooter').map(p => (
+                        <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
+                      ))}
+                    </select>
+                  </div>
                 )}
-              </select>
+              </div>
               
               <div className="flex gap-2">
                 <button 
@@ -241,6 +255,7 @@ export default function PitchEditor() {
                     setLogoBase64('');
                     setSavedLink('');
                     setSavedSlug('');
+                    setActiveDropdown(null);
                   }}
                   className="w-full py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
                 >
