@@ -17,7 +17,7 @@ export default function KioskPage({
   const resolvedSearchParams = use(searchParams);
   
   const hotel_id = resolvedParams.hotel_id;
-  const [dbBranding, setDbBranding] = useState<{name: string|null, color: string|null, logo: string|null}>({name: null, color: null, logo: null});
+  const [dbBranding, setDbBranding] = useState<{name: string|null, color: string|null, logo: string|null, font: string|null}>({name: null, color: null, logo: null, font: null});
 
   useEffect(() => {
     getHotelBranding(hotel_id).then(setDbBranding);
