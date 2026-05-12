@@ -32,7 +32,7 @@ export async function saveHotelBranding(formData: FormData) {
     const business_type = formData.get('business_type') as string || 'hotel';
     const scooter_fleet = formData.get('scooter_fleet') ? JSON.parse(formData.get('scooter_fleet') as string) : [];
     
-    let logoUrl = '/vibra-logo.svg'; // Default
+    let logoUrl = business_type === 'scooter' ? '' : '/vibra-logo.svg'; // Default
     
     // Upload logo to Cloudinary if provided
     if (logoBase64 && logoBase64.startsWith('data:image')) {
