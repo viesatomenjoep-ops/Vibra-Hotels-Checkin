@@ -215,9 +215,20 @@ export default function PitchEditor() {
                 }}
               >
                 <option value="">{t.pitch_choose_prototype || '-- Kies een prototype --'}</option>
-                {savedPrototypes.map(p => (
-                  <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
-                ))}
+                {savedPrototypes.filter(p => p.business_type !== 'scooter').length > 0 && (
+                  <optgroup label="🏨 Hotels">
+                    {savedPrototypes.filter(p => p.business_type !== 'scooter').map(p => (
+                      <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
+                    ))}
+                  </optgroup>
+                )}
+                {savedPrototypes.filter(p => p.business_type === 'scooter').length > 0 && (
+                  <optgroup label="🛵 Scooter Rentals">
+                    {savedPrototypes.filter(p => p.business_type === 'scooter').map(p => (
+                      <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
+                    ))}
+                  </optgroup>
+                )}
               </select>
               
               <div className="flex gap-2">
