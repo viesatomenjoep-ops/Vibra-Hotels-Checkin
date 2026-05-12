@@ -20,15 +20,14 @@ export async function getAllHotels() {
 
     if (hotelsError) throw hotelsError;
     
+    // Do not throw if scooter_companies fails (e.g. schema cache issue), just fallback to empty array
     const { data: scootersData, error: scootersError } = await supabase
       .from('scooter_companies')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (scootersError) throw scootersError;
-
     const hotelsWithTypes = (hotelsData || []).map(h => ({ ...h, business_type: 'hotel' }));
-    const scootersWithTypes = (scootersData || []).map(s => ({ ...s, business_type: 'scooter' }));
+    const scootersWithTypes = (!scootersError && scootersData ? scootersData : []).map(s => ({ ...s, business_type: 'scooter' }));
 
     return { success: true, hotels: [...hotelsWithTypes, ...scootersWithTypes] };
   } catch (err: any) {
