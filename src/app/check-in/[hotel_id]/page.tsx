@@ -164,7 +164,22 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[#00d2d3]">{t.phone}</label>
-                  <input type="tel" name="phone" autoComplete="tel" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <div className="mt-1 flex rounded-lg shadow-sm">
+                    <select name="phoneCountryCode" className="rounded-l-lg border-[#00d2d3]/30 p-3 border-y border-l bg-gray-50 focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-700 w-1/3 max-w-[130px] text-sm">
+                      <option value="+31">🇳🇱 +31</option>
+                      <option value="+44">🇬🇧 +44</option>
+                      <option value="+34">🇪🇸 +34</option>
+                      <option value="+49">🇩🇪 +49</option>
+                      <option value="+39">🇮🇹 +39</option>
+                      <option value="+351">🇵🇹 +351</option>
+                      <option value="+33">🇫🇷 +33</option>
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+32">🇧🇪 +32</option>
+                      <option value="+41">🇨🇭 +41</option>
+                      <option value="+43">🇦🇹 +43</option>
+                    </select>
+                    <input type="tel" name="phoneNumber" autoComplete="tel-national" required className="block w-full rounded-r-lg border-[#00d2d3]/30 p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-[#00d2d3]">{t.street_address}</label>

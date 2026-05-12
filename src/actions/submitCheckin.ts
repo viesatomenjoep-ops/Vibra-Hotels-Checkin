@@ -13,7 +13,9 @@ export async function processCheckin(formData: FormData) {
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const email = formData.get('email') as string;
-  const phone = formData.get('phone') as string;
+  const phoneCountryCode = formData.get('phoneCountryCode') as string;
+  const phoneNumber = formData.get('phoneNumber') as string;
+  const phone = `${phoneCountryCode} ${phoneNumber}`.trim();
   const address = formData.get('address') as string;
   const city = formData.get('city') as string;
   const zipcode = formData.get('zipcode') as string;
