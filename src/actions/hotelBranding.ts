@@ -3,17 +3,24 @@
 import { createClient } from '@supabase/supabase-js';
 import { v2 as cloudinary } from 'cloudinary';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
+// Initialize Cloudinary (can be at top level as it doesn't throw immediately)
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
+
+// Helper function to get Supabase client safely
+function getSupabaseClient() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Supabase configuratie ontbreekt in Vercel Environment Variables.');
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 export async function saveHotelBranding(formData: FormData) {
   try {
@@ -38,6 +45,7 @@ export async function saveHotelBranding(formData: FormData) {
     }
 
     // Upsert the hotel in Supabase
+    const supabase = getSupabaseClient();
     const { error } = await supabase
       .from('hotels')
       .upsert({ 
@@ -59,6 +67,7 @@ export async function saveHotelBranding(formData: FormData) {
 
 export async function getHotelBranding(slug: string) {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('hotels')
       .select('name, primary_color, logo_url, font_family')
