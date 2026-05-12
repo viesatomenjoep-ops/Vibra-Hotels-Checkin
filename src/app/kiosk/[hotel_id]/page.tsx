@@ -18,9 +18,13 @@ export default function KioskPage({
   
   const hotel_id = resolvedParams.hotel_id;
   const [dbBranding, setDbBranding] = useState<{name: string|null, color: string|null, logo: string|null, font: string|null}>({name: null, color: null, logo: null, font: null});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getHotelBranding(hotel_id).then(setDbBranding);
+    getHotelBranding(hotel_id).then((data) => {
+      setDbBranding(data);
+      setIsLoading(false);
+    });
   }, [hotel_id]);
 
   const brandName = resolvedSearchParams.name || dbBranding.name || 'Vibra Hotels';
@@ -61,6 +65,10 @@ export default function KioskPage({
     { code: 'it', short: 'IT' },
     { code: 'pt', short: 'PT' }
   ] as const;
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-white"></div>;
+  }
 
   return (
     <>
