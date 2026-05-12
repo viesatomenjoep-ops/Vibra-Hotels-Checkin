@@ -4,6 +4,9 @@ CREATE TABLE hotels (
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL, -- bijv. 'vibra-algarb'
   branding_colors JSONB DEFAULT '{"primary": "#00d2d3", "accent": "#ff007a"}'::jsonb,
+  logo_url TEXT DEFAULT '/vibra-logo.svg',
+  primary_color TEXT DEFAULT '#00d2d3',
+  font_family TEXT DEFAULT 'Inter',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

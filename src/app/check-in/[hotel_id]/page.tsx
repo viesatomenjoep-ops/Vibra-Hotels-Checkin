@@ -40,6 +40,8 @@ export default function CheckInPage({
   }
   const brandColorHex = baseColor;
   const brandHoverHex = brandColorHex;
+  const brandFont = dbBranding.font || 'Inter';
+  const encodedFont = brandFont.replace(/ /g, '+');
 
   const [step, setStep] = useState(0); // 0=Lang, 1=Scan, 2=Form, 4=Success
   const [language, setLanguage] = useState<Language>('en');
@@ -121,13 +123,16 @@ export default function CheckInPage({
   ] as const;
 
   return (
-    <div 
-      style={{ 
-        '--brand-color': brandColorHex,
-        '--brand-hover': brandHoverHex
-      } as React.CSSProperties}
-      className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans text-[var(--brand-color)]"
-    >
+    <>
+      <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:wght@400;500;600;700;800;900&display=swap`} rel="stylesheet" />
+      <div 
+        style={{ 
+          '--brand-color': brandColorHex,
+          '--brand-hover': brandHoverHex,
+          fontFamily: `'${brandFont}', sans-serif`
+        } as React.CSSProperties}
+        className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 text-[var(--brand-color)]"
+      >
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl overflow-hidden">
 
         {/* Header */}
@@ -358,5 +363,6 @@ export default function CheckInPage({
         </div>
       </div>
     </div>
+    </>
   );
 }

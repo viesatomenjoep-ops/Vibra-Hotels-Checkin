@@ -33,9 +33,9 @@ export default function KioskPage({
     baseColor = dbBranding.color;
   }
   const brandColorHex = baseColor;
-  
-  // Calculate a slightly darker hover color based on the brand color (simple hex manipulation for the prototype)
   const brandHoverHex = brandColorHex;
+  const brandFont = dbBranding.font || 'Inter';
+  const encodedFont = brandFont.replace(/ /g, '+');
 
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState<Language>('en');
@@ -63,13 +63,16 @@ export default function KioskPage({
   ] as const;
 
   return (
-    <div 
-      style={{ 
-        '--brand-color': brandColorHex,
-        '--brand-hover': brandHoverHex
-      } as React.CSSProperties}
-      className="min-h-screen bg-[var(--brand-color)] flex flex-col items-center justify-center p-8 font-sans relative"
-    >
+    <>
+      <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:wght@400;500;600;700;800;900&display=swap`} rel="stylesheet" />
+      <div 
+        style={{ 
+          '--brand-color': brandColorHex,
+          '--brand-hover': brandHoverHex,
+          fontFamily: `'${brandFont}', sans-serif`
+        } as React.CSSProperties}
+        className="min-h-screen bg-[var(--brand-color)] flex flex-col items-center justify-center p-8 relative"
+      >
 
       <div className="w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] border-4 border-[var(--brand-hover)]/20 relative">
         
@@ -137,5 +140,6 @@ export default function KioskPage({
         
       </div>
     </div>
+    </>
   );
 }

@@ -8,6 +8,7 @@ export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('Jet Hotels');
   const [hotelSlug, setHotelSlug] = useState('jet-hotels');
   const [color, setColor] = useState('#ff0000');
+  const [font, setFont] = useState('Inter');
   const [logoBase64, setLogoBase64] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [savedLink, setSavedLink] = useState('');
@@ -34,6 +35,7 @@ export default function PitchEditor() {
       formData.append('name', hotelName);
       formData.append('slug', hotelSlug);
       formData.append('color', color);
+      formData.append('font_family', font);
       formData.append('logoBase64', logoBase64);
 
       const result = await saveHotelBranding(formData);
@@ -92,6 +94,23 @@ export default function PitchEditor() {
                 className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none uppercase"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Typografie / Font (Google Fonts)</label>
+            <select 
+              value={font} 
+              onChange={(e) => setFont(e.target.value)}
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none mb-6"
+              style={{ fontFamily: font }}
+            >
+              <option value="Inter">Inter (Modern & Clean)</option>
+              <option value="Playfair Display">Playfair Display (Luxe & Klassiek)</option>
+              <option value="Montserrat">Montserrat (Geometrisch & Strak)</option>
+              <option value="Outfit">Outfit (Tech & Fris)</option>
+              <option value="Cormorant Garamond">Cormorant Garamond (Boutique & Elegant)</option>
+              <option value="DM Sans">DM Sans (Minimalistisch & Leesbaar)</option>
+            </select>
           </div>
 
           <div>
