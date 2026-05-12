@@ -21,10 +21,35 @@ export async function processCheckin(formData: FormData) {
   const base64Signature = formData.get('signature') as string;
 
   try {
-    // 1. Upload handtekening naar Cloudinary
-    const signatureUrl = await uploadSignature(base64Signature, hotelId);
+    // 1. Zoek of maak het hotel aan op basis van de slug ('vibra-algarb')
+    let actualHotelId = '';
+    const { data: existingHotel } = await supabase
+      .from('hotels')
+      .select('id')
+      .eq('slug', hotelId)
+      .single();
 
-    // 2. Maak Gast aan in Supabase
+    if (existingHotel) {
+      actualHotelId = existingHotel.id;
+    } else {
+      // Hotel bestaat nog niet in de nieuwe DB, maak hem direct aan!
+      const { data: newHotel, error: newHotelError } = await supabase
+        .from('hotels')
+        .insert([{ 
+          name: hotelId.replace('-', ' ').toUpperCase(), 
+          slug: hotelId 
+        }])
+        .select('id')
+        .single();
+        
+      if (newHotelError) throw newHotelError;
+      actualHotelId = newHotel.id;
+    }
+
+    // 2. Upload handtekening naar Cloudinary
+    const signatureUrl = await uploadSignature(base64Signature, actualHotelId);
+
+    // 3. Maak Gast aan in Supabase
     const { data: guestData, error: guestError } = await supabase
       .from('guests')
       .insert([{ 
@@ -42,11 +67,11 @@ export async function processCheckin(formData: FormData) {
 
     if (guestError) throw guestError;
 
-    // 3. Koppel de checkin
+    // 4. Koppel de checkin aan het ECHTE hotel UUID
     const { error: checkinError } = await supabase
       .from('checkins')
       .insert([{
-        hotel_id: hotelId,
+        hotel_id: actualHotelId,
         guest_id: guestData.id,
         signature_url: signatureUrl,
         status: 'completed'
