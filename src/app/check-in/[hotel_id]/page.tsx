@@ -158,7 +158,9 @@ export default function CheckInPage({
             {brandLogo.endsWith('.svg') || brandLogo.includes('vibra') ? (
               <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto brightness-0 invert object-contain" />
             ) : (
-              <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto object-contain rounded" />
+              <div className="bg-white p-2 rounded-xl inline-flex justify-center items-center shadow-sm mx-auto">
+                <img src={brandLogo} alt={brandName} className="h-10 w-auto object-contain" />
+              </div>
             )}
             <p className="mt-2 text-lg opacity-90">{t.header_subtitle}</p>
           </div>
