@@ -57,17 +57,66 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
       }
     }
 
-    // Simulate OCR processing time (2 seconds)
-    // In a production app, you would send the canvas snapshot to an OCR API here.
-    setTimeout(() => {
-      setIsScanning(false);
-      onScanComplete({
-        firstName: '', // Real MRZ data would go here
-        lastName: '',
-        country: '',
-        idPhotoBase64
-      });
-    }, 2000);
+    // Initialize Tesseract OCR
+    import('tesseract.js').then(({ createWorker }) => {
+      const processOCR = async () => {
+        try {
+          const worker = await createWorker('eng');
+          const { data: { text } } = await worker.recognize(idPhotoBase64);
+          await worker.terminate();
+
+          // Parse MRZ (Machine Readable Zone)
+          const lines = text.split('\n').map(l => l.replace(/\s+/g, ''));
+          let firstName = '';
+          let lastName = '';
+          let country = '';
+
+          // Look for passport format (P<...) or ID card format (just names with <<)
+          let mrzNameLine = lines.find(l => (l.startsWith('P<') || l.startsWith('I<')) && l.includes('<<'));
+          if (!mrzNameLine) {
+            // For some ID cards, the name line doesn't start with P< or I< and has no digits
+            mrzNameLine = lines.find(l => l.includes('<<') && !/\d/.test(l));
+          }
+          
+          if (mrzNameLine) {
+            // Extract names
+            let namesPart = mrzNameLine;
+            if (mrzNameLine.startsWith('P<') || mrzNameLine.startsWith('I<')) {
+              country = mrzNameLine.substring(2, 5).replace(/</g, '');
+              namesPart = mrzNameLine.substring(5);
+            }
+            
+            const nameParts = namesPart.split('<<').filter(p => p.length > 0);
+            
+            if (nameParts.length > 0) {
+              lastName = nameParts[0].replace(/</g, ' ').trim();
+              // Clean up trailing < just in case
+              lastName = lastName.replace(/<+$/, '');
+            }
+            if (nameParts.length > 1) {
+              firstName = nameParts[1].replace(/</g, ' ').trim();
+              firstName = firstName.replace(/<+$/, '');
+            }
+          }
+
+          setIsScanning(false);
+          onScanComplete({
+            firstName,
+            lastName,
+            country,
+            idPhotoBase64
+          });
+
+        } catch (err) {
+          console.error("OCR Error:", err);
+          setIsScanning(false);
+          // Fallback to empty strings if OCR fails
+          onScanComplete({ firstName: '', lastName: '', country: '', idPhotoBase64 });
+        }
+      };
+
+      processOCR();
+    });
   };
 
   if (hasPermission === false) {
