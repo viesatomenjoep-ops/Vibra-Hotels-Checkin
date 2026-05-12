@@ -13,14 +13,24 @@ export async function getAllHotels() {
   );
 
   try {
-    const { data, error } = await supabase
+    const { data: hotelsData, error: hotelsError } = await supabase
       .from('hotels')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (hotelsError) throw hotelsError;
     
-    return { success: true, hotels: data || [] };
+    const { data: scootersData, error: scootersError } = await supabase
+      .from('scooter_companies')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (scootersError) throw scootersError;
+
+    const hotelsWithTypes = (hotelsData || []).map(h => ({ ...h, business_type: 'hotel' }));
+    const scootersWithTypes = (scootersData || []).map(s => ({ ...s, business_type: 'scooter' }));
+
+    return { success: true, hotels: [...hotelsWithTypes, ...scootersWithTypes] };
   } catch (err: any) {
     return { success: false, hotels: [], message: err.message };
   }

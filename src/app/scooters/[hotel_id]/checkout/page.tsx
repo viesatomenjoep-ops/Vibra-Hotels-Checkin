@@ -53,18 +53,18 @@ export default function ScooterCheckoutPage({
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
 
-      // Get actual hotel uuid from slug
-      const { data: hotelData } = await supabase
-        .from('hotels')
+      // Get actual company uuid from slug
+      const { data: companyData } = await supabase
+        .from('scooter_companies')
         .select('id')
         .eq('slug', hotel_id)
         .single();
 
-      if (hotelData) {
+      if (companyData) {
         await supabase
           .from('scooter_bookings')
           .insert({
-            business_id: hotelData.id,
+            company_id: companyData.id,
             guest_name: guestName,
             guest_email: email,
             phone: phone,

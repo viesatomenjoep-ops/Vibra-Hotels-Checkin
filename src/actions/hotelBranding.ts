@@ -46,21 +46,32 @@ export async function saveHotelBranding(formData: FormData) {
       logoUrl = logoBase64; // Fallback if they passed an existing URL
     }
 
-    // Upsert the hotel in Supabase
     const supabase = getSupabaseClient();
-    const { error } = await supabase
-      .from('hotels')
-      .upsert({ 
-        slug, 
-        name, 
-        primary_color: color, 
-        logo_url: logoUrl,
-        font_family,
-        business_type,
-        scooter_fleet
-      }, { onConflict: 'slug' });
-
-    if (error) throw error;
+    
+    if (business_type === 'scooter') {
+      const { error } = await supabase
+        .from('scooter_companies')
+        .upsert({ 
+          slug, 
+          name, 
+          primary_color: color, 
+          logo_url: logoUrl,
+          font_family,
+          scooter_fleet
+        }, { onConflict: 'slug' });
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('hotels')
+        .upsert({ 
+          slug, 
+          name, 
+          primary_color: color, 
+          logo_url: logoUrl,
+          font_family
+        }, { onConflict: 'slug' });
+      if (error) throw error;
+    }
 
     return { success: true, slug };
   } catch (err: any) {
@@ -72,9 +83,29 @@ export async function saveHotelBranding(formData: FormData) {
 export async function getHotelBranding(slug: string) {
   try {
     const supabase = getSupabaseClient();
+    
+    // Check scooter_companies first
+    const { data: scooterData, error: scooterError } = await supabase
+      .from('scooter_companies')
+      .select('name, primary_color, logo_url, font_family, scooter_fleet')
+      .eq('slug', slug)
+      .single();
+      
+    if (!scooterError && scooterData) {
+      return {
+        name: scooterData.name,
+        color: scooterData.primary_color,
+        logo: scooterData.logo_url,
+        font: scooterData.font_family,
+        business_type: 'scooter',
+        scooter_fleet: scooterData.scooter_fleet || []
+      };
+    }
+
+    // Fallback to hotels
     const { data, error } = await supabase
       .from('hotels')
-      .select('name, primary_color, logo_url, font_family, business_type, scooter_fleet')
+      .select('name, primary_color, logo_url, font_family')
       .eq('slug', slug)
       .single();
       
@@ -87,8 +118,8 @@ export async function getHotelBranding(slug: string) {
       color: data.primary_color,
       logo: data.logo_url,
       font: data.font_family,
-      business_type: data.business_type || 'hotel',
-      scooter_fleet: data.scooter_fleet || []
+      business_type: 'hotel',
+      scooter_fleet: []
     };
   } catch (e) {
     return { name: null, color: null, logo: null, font: null };

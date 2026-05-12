@@ -36,14 +36,22 @@ CREATE TABLE checkins (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Voeg business type en scooter vloot toe aan hotels
-ALTER TABLE hotels ADD COLUMN IF NOT EXISTS business_type TEXT DEFAULT 'hotel';
-ALTER TABLE hotels ADD COLUMN IF NOT EXISTS scooter_fleet JSONB DEFAULT '[]'::jsonb;
+-- 4. Maak de Scooter Companies tabel
+CREATE TABLE scooter_companies (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  primary_color TEXT DEFAULT '#00d2d3',
+  font_family TEXT DEFAULT 'Inter',
+  logo_url TEXT,
+  scooter_fleet JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 -- 5. Maak de Scooter Bookings tabel
 CREATE TABLE scooter_bookings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  business_id UUID REFERENCES hotels(id) ON DELETE CASCADE,
+  company_id UUID REFERENCES scooter_companies(id) ON DELETE CASCADE,
   guest_name TEXT NOT NULL,
   guest_email TEXT NOT NULL,
   phone TEXT NOT NULL,
@@ -59,10 +67,12 @@ CREATE TABLE scooter_bookings (
 ALTER TABLE hotels ENABLE ROW LEVEL SECURITY;
 ALTER TABLE guests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE checkins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE scooter_companies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scooter_bookings ENABLE ROW LEVEL SECURITY;
 
--- 5. RLS Policies: API keys mogen alleen check-ins wegschrijven (Insert) of lezen o.b.v. hotel_id
+-- 6. RLS Policies:
 CREATE POLICY "Allow public inserts for checkins" ON checkins FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public inserts for guests" ON guests FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public read access for hotel branding" ON hotels FOR SELECT USING (true);
+CREATE POLICY "Public read access for scooter_companies" ON scooter_companies FOR SELECT USING (true);
 CREATE POLICY "Allow public inserts for scooter_bookings" ON scooter_bookings FOR INSERT WITH CHECK (true);
