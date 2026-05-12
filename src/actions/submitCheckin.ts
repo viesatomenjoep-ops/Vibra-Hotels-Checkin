@@ -3,10 +3,15 @@
 import { createClient } from '@supabase/supabase-js';
 import { uploadSignature, uploadIdPhoto } from '@/lib/cloudinary';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabaseClient() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Supabase configuratie ontbreekt in Vercel.');
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 export async function processCheckin(formData: FormData) {
   const hotelId = formData.get('hotelId') as string;
@@ -24,7 +29,9 @@ export async function processCheckin(formData: FormData) {
   const idPhotoBase64 = formData.get('idPhoto') as string | null;
 
   try {
-    // 1. Zoek of maak het hotel aan op basis van de slug ('vibra-algarb')
+    const supabase = getSupabaseClient();
+    
+    // 1. Zoek of Maak het Hotel (fallback als slug id is) van de slug ('vibra-algarb')
     let actualHotelId = '';
     const { data: existingHotel } = await supabase
       .from('hotels')
