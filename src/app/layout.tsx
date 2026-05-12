@@ -8,8 +8,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Vibra Hotels Check-in",
-  description: "Digital Check-in app for Vibra Hotels",
+  title: "Viesa Check-in Hotels",
+  description: "Dynamic Digital Check-in platform by Viesa",
 };
 
 export default function RootLayout({

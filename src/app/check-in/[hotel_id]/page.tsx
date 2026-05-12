@@ -33,7 +33,7 @@ export default function CheckInPage({
     });
   }, [hotel_id]);
 
-  const brandName = resolvedSearchParams.name || dbBranding.name || 'Vibra Hotels';
+  const brandName = resolvedSearchParams.name || dbBranding.name || 'Viesa Check-in Hotels';
   const brandLogo = resolvedSearchParams.logo || dbBranding.logo || '/vibra-logo.svg';
   
   let baseColor = '#00d2d3';
