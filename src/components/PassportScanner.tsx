@@ -92,8 +92,8 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
       
       {/* Scanner Overlay Guide */}
       <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
-         <div className="w-3/4 h-1/4 border-2 border-[#00d2d3]/70 rounded-lg relative">
-             <div className="absolute w-full h-0.5 bg-[#00d2d3]/80 shadow-[0_0_8px_#00d2d3] animate-scan top-1/2"></div>
+         <div className="w-3/4 h-1/4 border-2 border-[var(--brand-color)]/70 rounded-lg relative">
+             <div className="absolute w-full h-0.5 bg-[var(--brand-color)]/80 shadow-[0_0_8px_var(--brand-color)] animate-scan top-1/2"></div>
          </div>
          <p className="text-white/70 text-sm mt-4 backdrop-blur-sm px-3 py-1 rounded-full bg-black/30">
            Plaats de MRZ code hierin / Place MRZ code here
@@ -105,7 +105,7 @@ export default function PassportScanner({ onScanComplete, onCancel, t }: Scanner
           type="button"
           onClick={captureAndScan}
           disabled={isScanning}
-          className="bg-[#00d2d3] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg disabled:opacity-50"
+          className="bg-[var(--brand-color)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg disabled:opacity-50"
         >
           {isScanning ? <RefreshCw className="animate-spin" size={20} /> : <Camera size={20} />}
           {isScanning ? t.processing : t.start_scanner}
