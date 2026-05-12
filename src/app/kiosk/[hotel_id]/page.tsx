@@ -82,34 +82,36 @@ export default function KioskPage({
         className="min-h-screen bg-[var(--brand-color)] flex flex-col items-center justify-center p-8 relative"
       >
 
-      <div className="w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] border-4 border-[var(--brand-hover)]/20 relative">
+      <div className="w-full max-w-5xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] border-4 border-[var(--brand-hover)]/20 relative">
         
         {/* Left Side: Branding & Instructions */}
-        <div className="flex-1 p-12 md:p-16 flex flex-col justify-center bg-gradient-to-br from-white to-gray-50">
-          <img src={brandLogo} alt={brandName} className="h-24 w-auto mb-8 origin-left object-contain" />
-          <h2 className="text-3xl font-bold text-[var(--brand-color)] mb-4">{t.kiosk_title}</h2>
-          <p className="text-xl text-[var(--brand-color)]/80 mb-10 leading-relaxed font-medium">
+        <div className="flex-1 p-12 md:p-16 flex flex-col justify-center bg-[var(--brand-color)] text-white">
+          <div className="bg-white p-4 rounded-2xl inline-block mb-8 self-start shadow-md">
+            <img src={brandLogo} alt={brandName} className="h-20 w-auto object-contain" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4">{t.kiosk_title}</h2>
+          <p className="text-xl text-white/90 mb-10 leading-relaxed font-medium">
             {t.kiosk_subtitle}
           </p>
           <div className="space-y-6">
-            <div className="flex items-center gap-5 text-[var(--brand-color)]">
-              <div className="w-10 h-10 rounded-full bg-[var(--brand-color)]/20 flex items-center justify-center text-[var(--brand-color)] font-bold text-xl border border-[var(--brand-color)]/30">1</div>
+            <div className="flex items-center gap-5 text-white">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-xl border border-white/30">1</div>
               <p className="text-xl font-bold">{t.kiosk_step1}</p>
             </div>
-            <div className="flex items-center gap-5 text-[var(--brand-color)]">
-              <div className="w-10 h-10 rounded-full bg-[var(--brand-color)]/20 flex items-center justify-center text-[var(--brand-color)] font-bold text-xl border border-[var(--brand-color)]/30">2</div>
+            <div className="flex items-center gap-5 text-white">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-xl border border-white/30">2</div>
               <p className="text-xl font-bold">{t.kiosk_step2}</p>
             </div>
-            <div className="flex items-center gap-5 text-[var(--brand-color)]">
-              <div className="w-10 h-10 rounded-full bg-[var(--brand-color)]/20 flex items-center justify-center text-[var(--brand-color)] font-bold text-xl border border-[var(--brand-color)]/30">3</div>
+            <div className="flex items-center gap-5 text-white">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-xl border border-white/30">3</div>
               <p className="text-xl font-bold">{t.kiosk_step3}</p>
             </div>
           </div>
           
-          <div className="mt-12 pt-8 border-t border-[var(--brand-color)]/10">
+          <div className="mt-12 pt-8 border-t border-white/20">
             <Link 
               href={`/check-in/${hotel_id}?lang=${language}`}
-              className="inline-block bg-white text-[var(--brand-color)] border-2 border-[var(--brand-color)] hover:bg-[var(--brand-color)] hover:text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-sm"
+              className="inline-block bg-white text-[var(--brand-color)] border-2 border-white hover:bg-gray-100 hover:text-[var(--brand-color)] px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-sm"
             >
               {t.kiosk_manual_button}
             </Link>
