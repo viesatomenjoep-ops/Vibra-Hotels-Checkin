@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, use } from 'react';
 import { processCheckin } from '@/actions/submitCheckin';
+import { getHotelBranding } from '@/actions/hotelBranding';
 import { CheckCircle, Globe, Eraser, Camera } from 'lucide-react';
 import { translations, Language } from '@/lib/translations';
 import dynamic from 'next/dynamic';
@@ -22,9 +23,22 @@ export default function CheckInPage({
   const resolvedSearchParams = use(searchParams);
   
   const hotel_id = resolvedParams.hotel_id;
-  const brandName = resolvedSearchParams.name || 'Vibra Hotels';
-  const brandLogo = resolvedSearchParams.logo || '/vibra-logo.svg';
-  const brandColorHex = resolvedSearchParams.color ? `#${resolvedSearchParams.color}` : '#00d2d3';
+  const [dbBranding, setDbBranding] = useState<{name: string|null, color: string|null, logo: string|null}>({name: null, color: null, logo: null});
+
+  useEffect(() => {
+    getHotelBranding(hotel_id).then(setDbBranding);
+  }, [hotel_id]);
+
+  const brandName = resolvedSearchParams.name || dbBranding.name || 'Vibra Hotels';
+  const brandLogo = resolvedSearchParams.logo || dbBranding.logo || '/vibra-logo.svg';
+  
+  let baseColor = '#00d2d3';
+  if (resolvedSearchParams.color) {
+    baseColor = `#${resolvedSearchParams.color}`;
+  } else if (dbBranding.color) {
+    baseColor = dbBranding.color;
+  }
+  const brandColorHex = baseColor;
   const brandHoverHex = brandColorHex;
 
   const [step, setStep] = useState(0); // 0=Lang, 1=Scan, 2=Form, 4=Success

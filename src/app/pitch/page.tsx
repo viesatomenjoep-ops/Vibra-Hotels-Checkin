@@ -2,24 +2,58 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { saveHotelBranding } from '@/actions/hotelBranding';
 
 export default function PitchEditor() {
   const [hotelName, setHotelName] = useState('Jet Hotels');
   const [hotelSlug, setHotelSlug] = useState('jet-hotels');
   const [color, setColor] = useState('#ff0000');
-  const [logo, setLogo] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png');
+  const [logoBase64, setLogoBase64] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [savedLink, setSavedLink] = useState('');
+  const [error, setError] = useState('');
 
-  const encodedLogo = encodeURIComponent(logo);
-  const encodedName = encodeURIComponent(hotelName);
-  const hexColor = color.replace('#', '');
-  
-  const magicLink = `/kiosk/${hotelSlug}?name=${encodedName}&color=${hexColor}&logo=${encodedLogo}`;
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoBase64(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setError('');
+    setSavedLink('');
+
+    try {
+      const formData = new FormData();
+      formData.append('name', hotelName);
+      formData.append('slug', hotelSlug);
+      formData.append('color', color);
+      formData.append('logoBase64', logoBase64);
+
+      const result = await saveHotelBranding(formData);
+      if (result.success) {
+        const host = window.location.origin;
+        setSavedLink(`${host}/kiosk/${result.slug}`);
+      } else {
+        setError(result.message);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Er is een onbekende fout opgetreden.');
+    }
+    setIsSaving(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8 font-sans text-gray-800">
       <div className="w-full max-w-2xl bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
         <h1 className="text-3xl font-black mb-2 text-gray-900">Viesa Pitch Editor</h1>
-        <p className="text-gray-500 mb-8">Maak razendsnel een whitelabel prototype Kiosk link aan voor je pitch.</p>
+        <p className="text-gray-500 mb-8">Maak razendsnel een whitelabel prototype aan. Alles wordt écht opgeslagen in de database, inclusief eigen logo!</p>
 
         <div className="space-y-6">
           <div>
@@ -33,7 +67,7 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Hotel ID (Slug in database)</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Hotel ID (Unieke URL naam)</label>
             <input 
               type="text" 
               value={hotelSlug} 
@@ -61,28 +95,47 @@ export default function PitchEditor() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Logo URL (Zorg dat de link eindigt op .png of .svg)</label>
-            <input 
-              type="text" 
-              value={logo} 
-              onChange={(e) => setLogo(e.target.value)}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none"
-            />
+            <label className="block text-sm font-bold text-gray-700 mb-2">Upload Logo (Bestand)</label>
+            <div className="flex flex-col gap-4">
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+              />
+              {logoBase64 && (
+                <div className="p-4 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 h-32">
+                  <img src={logoBase64} alt="Preview" className="max-h-full object-contain" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 p-6 bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300">
-          <p className="text-sm font-bold text-gray-500 mb-4 uppercase tracking-wider">Jouw Magic Link</p>
-          <a 
-            href={magicLink} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block w-full text-center py-4 bg-black text-white rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors shadow-lg"
-          >
-            Open Live Prototype
-          </a>
-          <p className="text-xs text-gray-400 mt-4 text-center break-all">{magicLink}</p>
-        </div>
+        {error && <p className="text-red-500 font-bold mt-6">{error}</p>}
+
+        <button 
+          onClick={handleSave}
+          disabled={isSaving}
+          className={`mt-8 w-full py-4 text-white rounded-xl font-bold text-lg transition-colors shadow-lg ${isSaving ? 'bg-gray-400' : 'bg-[#00d2d3] hover:bg-[#00b5b6]'}`}
+        >
+          {isSaving ? 'Bezig met opslaan en uploaden...' : 'Sla Prototype Op'}
+        </button>
+
+        {savedLink && (
+          <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
+            <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">Succesvol opgeslagen!</p>
+            <a 
+              href={savedLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block w-full text-center py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
+            >
+              Open het Prototype nu!
+            </a>
+            <p className="text-xs text-green-600/70 mt-4 text-center break-all">{savedLink}</p>
+          </div>
+        )}
       </div>
     </div>
   );
