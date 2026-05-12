@@ -120,7 +120,7 @@ export default function PitchEditor() {
     setSavedLink('');
 
     if (!hotelName.trim() || !hotelSlug.trim()) {
-      setError('Hotel Name and Hotel ID (slug) are required.');
+      setError(businessType === 'scooter' ? t.pitch_error_scooter_required : t.pitch_error_hotel_required);
       setIsSaving(false);
       return;
     }
