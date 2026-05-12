@@ -8,113 +8,130 @@ type Language = 'nl' | 'en' | 'es';
 
 const content = {
   nl: {
-    hero_title: 'Verken Ibiza in Stijl.',
-    hero_subtitle: 'Huur de beste scooters voor jouw ultieme eilandavontuur. Snel, betrouwbaar en altijd klaar voor vertrek.',
-    hero_btn: 'Nu Reserveren',
-    book_title: 'Plan Jouw Rit',
-    book_pickup: 'Ophaaldatum',
-    book_dropoff: 'Terugbrengdatum',
-    book_btn: 'Bekijk Beschikbaarheid',
-    benefits_title: 'Waarom Mr. Rental Ibiza?',
-    p1_title: 'Premium Scooters',
-    p1_desc: 'Altijd perfect onderhouden.',
-    p2_title: 'All-Inclusive',
-    p2_desc: 'Inclusief verzekering en twee helmen.',
-    p3_title: 'Lokale Support',
-    p3_desc: 'Wij staan altijd voor je klaar op het eiland.',
-    fleet_title: 'Kies je Scooter',
-    fleet_btn: 'Nu Reserveren',
+    nav_book: 'BOEK NU',
+    nav_fleet: 'VLOOT',
+    nav_location: 'LOCATIE',
+    nav_contact: 'CONTACT',
+    hero_title: 'Zweef over Ibiza.',
+    hero_subtitle: 'De ultieme vrijheid op twee wielen. Ontdek verborgen baaien en zonovergoten wegen met onze premium boho-chic scooters.',
+    hero_btn: 'Ontdek de Magie',
+    book_title: 'PLANNEN JOUW IBIZA RIT',
+    book_pickup: 'Ophalen',
+    book_dropoff: 'Terugbrengen',
+    book_btn: 'Zoek Beschikbaarheid',
+    fleet_title: 'Onze Zwevende Vloot',
+    fleet_subtitle: 'Kies jouw perfecte metgezel voor het eiland',
+    fleet_btn: 'Reserveer',
     price_from: 'Vanaf',
-    price_day: '/ dag'
+    price_day: '/ dag',
+    footer_title: 'Verlies de Tijd.',
+    footer_desc: 'Mr. Rental Ibiza - Waar jouw eilandavontuur begint.'
   },
   en: {
-    hero_title: 'Explore Ibiza in Style.',
-    hero_subtitle: 'Rent the best scooters for your ultimate island adventure. Fast, reliable, and always ready to go.',
-    hero_btn: 'Book Now',
-    book_title: 'Plan Your Ride',
-    book_pickup: 'Pick-up Date',
-    book_dropoff: 'Drop-off Date',
+    nav_book: 'BOOK NOW',
+    nav_fleet: 'FLEET',
+    nav_location: 'LOCATION',
+    nav_contact: 'CONTACT',
+    hero_title: 'Float across Ibiza.',
+    hero_subtitle: 'Ultimate freedom on two wheels. Discover hidden coves and sun-drenched roads with our premium boho-chic scooters.',
+    hero_btn: 'Discover the Magic',
+    book_title: 'PLAN YOUR IBIZA RIDE',
+    book_pickup: 'Pick-up',
+    book_dropoff: 'Drop-off',
     book_btn: 'Check Availability',
-    benefits_title: 'Why Mr. Rental Ibiza?',
-    p1_title: 'Premium Scooters',
-    p1_desc: 'Always perfectly maintained.',
-    p2_title: 'All-Inclusive',
-    p2_desc: 'Includes insurance and two helmets.',
-    p3_title: 'Local Support',
-    p3_desc: 'We are always here for you on the island.',
-    fleet_title: 'Choose Your Scooter',
-    fleet_btn: 'Reserve Now',
+    fleet_title: 'Our Floating Fleet',
+    fleet_subtitle: 'Choose your perfect island companion',
+    fleet_btn: 'Reserve',
     price_from: 'From',
-    price_day: '/ day'
+    price_day: '/ day',
+    footer_title: 'Lose Track of Time.',
+    footer_desc: 'Mr. Rental Ibiza - Where your island adventure begins.'
   },
   es: {
-    hero_title: 'Explora Ibiza con Estilo.',
-    hero_subtitle: 'Alquila las mejores motos para tu máxima aventura en la isla. Rápidas, fiables y siempre listas para arrancar.',
-    hero_btn: 'Reservar Ahora',
-    book_title: 'Planifica tu Viaje',
-    book_pickup: 'Fecha de Recogida',
-    book_dropoff: 'Fecha de Devolución',
+    nav_book: 'RESERVAR',
+    nav_fleet: 'FLOTA',
+    nav_location: 'UBICACIÓN',
+    nav_contact: 'CONTACTO',
+    hero_title: 'Flota por Ibiza.',
+    hero_subtitle: 'Libertad absoluta en dos ruedas. Descubre calas escondidas y caminos bañados por el sol.',
+    hero_btn: 'Descubre la Magia',
+    book_title: 'PLANIFICA TU VIAJE EN IBIZA',
+    book_pickup: 'Recogida',
+    book_dropoff: 'Devolución',
     book_btn: 'Ver Disponibilidad',
-    benefits_title: '¿Por qué Mr. Rental Ibiza?',
-    p1_title: 'Motos Premium',
-    p1_desc: 'Siempre en perfecto estado.',
-    p2_title: 'Todo Incluido',
-    p2_desc: 'Incluye seguro y dos cascos.',
-    p3_title: 'Soporte Local',
-    p3_desc: 'Siempre estamos a tu disposición en la isla.',
-    fleet_title: 'Elige tu Moto',
-    fleet_btn: 'Reservar Ahora',
+    fleet_title: 'Nuestra Flota',
+    fleet_subtitle: 'Elige tu compañero de isla perfecto',
+    fleet_btn: 'Reservar',
     price_from: 'Desde',
-    price_day: '/ día'
+    price_day: '/ día',
+    footer_title: 'Pierde la Noción del Tiempo.',
+    footer_desc: 'Mr. Rental Ibiza - Donde comienza tu aventura.'
   }
 };
 
+// Premium Unsplash placeholders matching the exact prompt
+const HERO_IMG = "https://images.unsplash.com/photo-1541604193435-22287d32c2c2?q=80&w=2000&auto=format&fit=crop"; // Scenic coastal ride
+const FOOTER_IMG = "https://images.unsplash.com/photo-1516575334481-afea14a7e844?q=80&w=2000&auto=format&fit=crop"; // Sunset aesthetic
+const SCOOTER_IMGS = [
+  "https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=800&auto=format&fit=crop", // Vintage Vespa
+  "https://images.unsplash.com/photo-1620601323381-1979b1836c2f?q=80&w=800&auto=format&fit=crop", // Modern Scooter
+  "https://images.unsplash.com/photo-1620882319200-a548c40b8a10?q=80&w=800&auto=format&fit=crop"  // Beach parked
+];
+
 export default function MisterRentalLandingPage() {
   const hotel_id = 'misterrentalibiza';
-  
   const [dbBranding, setDbBranding] = useState<any>({name: null, color: null, logo: null, font: null, scooter_fleet: []});
   const [isLoading, setIsLoading] = useState(true);
-  const [lang, setLang] = useState<Language>('nl');
+  const [lang, setLang] = useState<Language>('es');
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     getHotelBranding(hotel_id).then((data) => {
       setDbBranding(data);
       setIsLoading(false);
     });
+    
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 font-bold">Loading Experience...</div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#FDFBF7] font-serif text-[#C4A484] text-2xl tracking-widest uppercase">Loading Magic...</div>;
 
   const t = content[lang];
-  const brandName = dbBranding.name || 'Mr. Rental Ibiza';
-  const brandLogo = dbBranding.logo || '';
-  const brandColor = dbBranding.color || '#00d2d3';
-  const font = dbBranding.font || 'Inter';
+  const brandColor = dbBranding.color || '#D4B895'; // Boho Chic warm sand color default
+  const font = dbBranding.font || 'Playfair Display'; // Elegant boho font
   const encodedFont = font.replace(/ /g, '+');
   
   const fleet = dbBranding.scooter_fleet?.length > 0 ? dbBranding.scooter_fleet : [
-    { id: '1', name: 'Vespa Primavera', cc: '125cc', price: '35' },
-    { id: '2', name: 'Honda PCX', cc: '125cc', price: '28' }
+    { id: '1', name: 'Vintage Primavera', cc: '125cc', price: '45', customImg: SCOOTER_IMGS[0] },
+    { id: '2', name: 'Ibiza Cruiser', cc: '125cc', price: '38', customImg: SCOOTER_IMGS[1] },
+    { id: '3', name: 'Coastal Explorer', cc: '50cc', price: '30', customImg: SCOOTER_IMGS[2] }
   ];
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: font }}>
-      <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:wght@400;500;600;700;800;900&display=swap`} rel="stylesheet" />
+    <div className="min-h-screen bg-[#FDFBF7]" style={{ fontFamily: font }}>
+      <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap`} rel="stylesheet" />
       
-      {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-50 px-6 py-6 flex items-center justify-between">
-        {brandLogo ? (
-          <img src={brandLogo} alt="Logo" className="h-12 w-auto object-contain brightness-0 invert drop-shadow-md" />
-        ) : (
-          <h1 className="text-2xl font-black text-white drop-shadow-md">{brandName}</h1>
-        )}
+      {/* Elegant Boho Navigation */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-8 py-6 flex items-center justify-between transition-all duration-500 ${scrolled ? 'bg-[#FDFBF7]/90 backdrop-blur-lg shadow-sm py-4' : 'bg-transparent'}`}>
+        <h1 className={`text-2xl font-bold tracking-widest uppercase transition-colors duration-500 ${scrolled ? 'text-gray-900' : 'text-white drop-shadow-md'}`}>
+          Mr. Rental <span className="font-light italic">Ibiza</span>
+        </h1>
         
-        <div className="flex gap-2">
+        <div className={`hidden md:flex gap-10 text-xs tracking-[0.2em] font-['Montserrat'] font-semibold transition-colors duration-500 ${scrolled ? 'text-gray-800' : 'text-white drop-shadow-md'}`}>
+          <a href="#book" className="hover:opacity-60 transition-opacity">{t.nav_book}</a>
+          <a href="#fleet" className="hover:opacity-60 transition-opacity">{t.nav_fleet}</a>
+          <a href="#location" className="hover:opacity-60 transition-opacity">{t.nav_location}</a>
+          <a href="#contact" className="hover:opacity-60 transition-opacity">{t.nav_contact}</a>
+        </div>
+        
+        <div className="flex gap-4 font-['Montserrat'] text-xs font-semibold tracking-widest">
           {(['nl', 'en', 'es'] as Language[]).map(l => (
             <button 
               key={l}
               onClick={() => setLang(l)}
-              className={`font-bold text-xs uppercase px-3 py-1.5 rounded-full transition-all backdrop-blur-md ${lang === l ? 'bg-white text-gray-900' : 'bg-black/30 text-white hover:bg-black/50'}`}
+              className={`uppercase transition-all ${lang === l ? (scrolled ? 'text-black border-b border-black' : 'text-white border-b border-white') : (scrolled ? 'text-gray-400' : 'text-white/60')}`}
             >
               {l}
             </button>
@@ -122,115 +139,88 @@ export default function MisterRentalLandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header className="relative h-[80vh] min-h-[600px] flex flex-col items-center justify-center overflow-hidden">
+      {/* Anti-Gravity Hero Slideshow */}
+      <header className="relative h-screen min-h-[700px] flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gray-900">
-          <img src="https://images.unsplash.com/photo-1498887960847-2a5e46312788?q=80&w=2000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" alt="Ibiza" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <img src={HERO_IMG} className="absolute inset-0 w-full h-full object-cover opacity-70 animate-[kenburns_20s_ease-in-out_infinite_alternate]" alt="Floating Ibiza Coastal Road" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#FDFBF7]"></div>
         </div>
         
-        <div className="relative z-10 text-center px-4 max-w-4xl animate-in slide-in-from-bottom-8 duration-1000">
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 drop-shadow-xl">{t.hero_title}</h1>
-          <p className="text-lg md:text-2xl text-white/90 font-medium mb-10 max-w-2xl mx-auto drop-shadow-md leading-relaxed">{t.hero_subtitle}</p>
-          <button 
-            onClick={() => document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-10 py-5 text-white text-lg font-black rounded-full shadow-2xl hover:scale-105 transition-all duration-300"
-            style={{ backgroundColor: brandColor }}
+        <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in slide-in-from-bottom-12 duration-1000 mt-20">
+          <h2 className="text-6xl md:text-8xl font-bold text-white mb-6 drop-shadow-xl italic">{t.hero_title}</h2>
+          <p className="text-lg md:text-xl text-white/90 font-['Montserrat'] font-light mb-12 max-w-2xl mx-auto drop-shadow-md leading-relaxed tracking-wide">
+            {t.hero_subtitle}
+          </p>
+          <a 
+            href="#book"
+            className="inline-block px-12 py-5 text-white text-sm tracking-[0.2em] font-['Montserrat'] uppercase border border-white/50 rounded-full hover:bg-white hover:text-gray-900 transition-all duration-500 backdrop-blur-sm"
           >
             {t.hero_btn}
-          </button>
+          </a>
         </div>
       </header>
 
-      {/* Booking Widget Section */}
-      <section id="booking-widget" className="relative -mt-24 z-20 px-4">
-        <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-gray-100">
-          <h2 className="text-2xl font-black text-gray-900 mb-6">{t.book_title}</h2>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{t.book_pickup}</label>
-              <input type="date" defaultValue="2026-08-12" className="w-full font-bold text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all" style={{ '--tw-ring-color': brandColor } as React.CSSProperties} />
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{t.book_dropoff}</label>
-              <input type="date" defaultValue="2026-08-19" className="w-full font-bold text-gray-900 bg-gray-50 p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all" style={{ '--tw-ring-color': brandColor } as React.CSSProperties} />
-            </div>
-            <div className="flex items-end">
-              <button 
-                onClick={() => document.getElementById('fleet-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full md:w-auto px-8 py-4 text-white font-black rounded-xl shadow-lg hover:brightness-110 transition-all" 
-                style={{ backgroundColor: brandColor }}
-              >
-                {t.book_btn}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-24 bg-gray-50 mt-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-black text-center text-gray-900 mb-16">{t.benefits_title}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 text-center hover:-translate-y-2 transition-transform duration-300">
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner" style={{ backgroundColor: `${brandColor}20`, color: brandColor }}>🛵</div>
-              <h3 className="text-xl font-black text-gray-900 mb-3">{t.p1_title}</h3>
-              <p className="text-gray-500 font-medium">{t.p1_desc}</p>
-            </div>
-            <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 text-center hover:-translate-y-2 transition-transform duration-300">
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner" style={{ backgroundColor: `${brandColor}20`, color: brandColor }}>🛡️</div>
-              <h3 className="text-xl font-black text-gray-900 mb-3">{t.p2_title}</h3>
-              <p className="text-gray-500 font-medium">{t.p2_desc}</p>
-            </div>
-            <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 text-center hover:-translate-y-2 transition-transform duration-300">
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner" style={{ backgroundColor: `${brandColor}20`, color: brandColor }}>📍</div>
-              <h3 className="text-xl font-black text-gray-900 mb-3">{t.p3_title}</h3>
-              <p className="text-gray-500 font-medium">{t.p3_desc}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Fleet Section */}
-      <section id="fleet-section" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-black text-gray-900 mb-12">{t.fleet_title}</h2>
+      {/* Elegant Booking Widget */}
+      <section id="book" className="relative z-20 px-6 -mt-32">
+        <div className="max-w-5xl mx-auto bg-white/80 backdrop-blur-xl rounded-t-[3rem] rounded-b-[1rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 md:p-14 border border-white/40">
+          <h3 className="text-center text-xs font-['Montserrat'] tracking-[0.3em] text-gray-400 uppercase mb-8">{t.book_title}</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {fleet.map((scooter: any) => (
-              <div key={scooter.id} className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group hover:shadow-2xl transition-all duration-300">
-                <div className="h-64 bg-gray-100 relative flex items-center justify-center overflow-hidden">
-                  {scooter.image ? (
-                    <img src={scooter.image} alt={scooter.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  ) : (
-                    <span className="text-8xl group-hover:scale-110 transition-transform duration-700">🛵</span>
-                  )}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider text-green-600 shadow-sm z-10">Available</div>
+          <div className="flex flex-col md:flex-row gap-8 items-end">
+            <div className="flex-1 w-full border-b border-gray-200 pb-2">
+              <label className="block text-[10px] font-['Montserrat'] font-bold text-gray-400 uppercase tracking-widest mb-3">{t.book_pickup}</label>
+              <input type="date" defaultValue="2026-08-12" className="w-full bg-transparent text-gray-800 text-lg font-medium focus:outline-none" />
+            </div>
+            
+            <div className="flex-1 w-full border-b border-gray-200 pb-2">
+              <label className="block text-[10px] font-['Montserrat'] font-bold text-gray-400 uppercase tracking-widest mb-3">{t.book_dropoff}</label>
+              <input type="date" defaultValue="2026-08-19" className="w-full bg-transparent text-gray-800 text-lg font-medium focus:outline-none" />
+            </div>
+            
+            <button 
+              className="w-full md:w-auto px-10 py-5 text-white text-xs tracking-widest font-['Montserrat'] font-bold uppercase rounded-none hover:opacity-90 transition-opacity" 
+              style={{ backgroundColor: brandColor }}
+            >
+              {t.book_btn}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Boho Fleet Section */}
+      <section id="fleet" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 italic">{t.fleet_title}</h2>
+            <p className="text-gray-500 font-['Montserrat'] text-sm tracking-widest uppercase">{t.fleet_subtitle}</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {fleet.map((scooter: any, idx: number) => (
+              <div key={scooter.id} className="group cursor-pointer">
+                <div className="relative h-[450px] mb-8 overflow-hidden rounded-[2rem] shadow-lg">
+                  <img 
+                    src={scooter.customImg || scooter.image || SCOOTER_IMGS[idx % 3]} 
+                    alt={scooter.name} 
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" 
+                  />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
                 
-                <div className="p-8 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-3">{scooter.name}</h3>
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md text-xs font-bold">{scooter.cc}</span>
-                      <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md text-xs font-bold">Automatic</span>
-                    </div>
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{scooter.name}</h3>
+                  <p className="text-xs font-['Montserrat'] text-gray-400 tracking-widest uppercase mb-4">{scooter.cc} • Auto</p>
+                  
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="text-gray-500 text-sm italic">{t.price_from}</span>
+                    <span className="text-2xl font-bold" style={{ color: brandColor }}>€{scooter.price}</span>
                   </div>
                   
-                  <div className="flex justify-between items-end pt-6 border-t border-gray-100">
-                    <div>
-                      <span className="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{t.price_from}</span>
-                      <div className="text-3xl font-black" style={{ color: brandColor }}>€{scooter.price}<span className="text-sm text-gray-400 font-bold ml-1">{t.price_day}</span></div>
-                    </div>
-                    <Link 
-                      href={`/scooters/${hotel_id}/checkout?scooter=${encodeURIComponent(scooter.name)}&price=${scooter.price}`}
-                      className="px-6 py-3 text-white font-black text-sm rounded-xl shadow-md hover:brightness-110 transition-all hover:-translate-y-1" 
-                      style={{ backgroundColor: brandColor }}
-                    >
-                      {t.fleet_btn}
-                    </Link>
-                  </div>
+                  <Link 
+                    href={`/scooters/${hotel_id}/checkout?scooter=${encodeURIComponent(scooter.name)}&price=${scooter.price}`}
+                    className="inline-block mt-6 px-8 py-3 border border-gray-900 text-gray-900 text-xs font-['Montserrat'] tracking-widest uppercase hover:bg-gray-900 hover:text-white transition-all duration-300"
+                  >
+                    {t.fleet_btn}
+                  </Link>
                 </div>
               </div>
             ))}
@@ -238,15 +228,46 @@ export default function MisterRentalLandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 text-center">
-        {brandLogo ? (
-          <img src={brandLogo} alt="Logo" className="h-10 w-auto mx-auto object-contain brightness-0 invert opacity-50 mb-6" />
-        ) : (
-          <h2 className="text-xl font-black opacity-50 mb-6">{brandName}</h2>
-        )}
-        <p className="text-gray-500 text-sm font-medium">© 2026 {brandName}. Powered by Viesa Platform.</p>
+      {/* Cinematic Sunset Footer */}
+      <footer id="contact" className="relative h-[80vh] flex flex-col items-center justify-end overflow-hidden py-20">
+        <div className="absolute inset-0 bg-gray-900">
+          <img src={FOOTER_IMG} className="absolute inset-0 w-full h-full object-cover opacity-80" alt="Sunset Couple Scooter" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        </div>
+        
+        <div className="relative z-10 text-center px-4 w-full max-w-4xl">
+          <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 italic drop-shadow-lg">{t.footer_title}</h2>
+          <p className="text-white/70 font-['Montserrat'] tracking-[0.2em] uppercase text-xs mb-16">{t.footer_desc}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-white/20 pt-16 text-white/80 font-['Montserrat'] text-xs tracking-widest">
+            <div>
+              <p className="font-bold text-white mb-4">IBIZA TOWN</p>
+              <p>Av. Pere Matutes Noguera</p>
+              <p>07800 Ibiza, Illes Balears</p>
+            </div>
+            <div>
+              <p className="font-bold text-white mb-4">RESERVATIONS</p>
+              <p>+34 971 123 456</p>
+              <p>hola@mrrentalibiza.com</p>
+            </div>
+            <div>
+              <p className="font-bold text-white mb-4">FOLLOW THE SUN</p>
+              <div className="flex gap-4 justify-center">
+                <span>INSTAGRAM</span>
+                <span>FACEBOOK</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
+      
+      {/* Inline Animation Styles */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes kenburns {
+          0% { transform: scale(1) translate(0, 0); }
+          100% { transform: scale(1.1) translate(-2%, -1%); }
+        }
+      `}} />
     </div>
   );
 }
