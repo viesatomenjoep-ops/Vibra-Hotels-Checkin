@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS scooter_companies (
 -- 5. Maak de Scooter Bookings tabel
 CREATE TABLE IF NOT EXISTS scooter_bookings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  company_id UUID REFERENCES scooter_companies(id) ON DELETE CASCADE,
+  company_id BIGINT REFERENCES scooter_companies(id) ON DELETE CASCADE,
   guest_name TEXT NOT NULL,
   guest_email TEXT NOT NULL,
   phone TEXT NOT NULL,
