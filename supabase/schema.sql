@@ -85,3 +85,6 @@ CREATE POLICY "Public read access for scooter_companies" ON scooter_companies FO
 
 DROP POLICY IF EXISTS "Allow public inserts for scooter_bookings" ON scooter_bookings;
 CREATE POLICY "Allow public inserts for scooter_bookings" ON scooter_bookings FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public read access for scooter_bookings" ON scooter_bookings;
+CREATE POLICY "Public read access for scooter_bookings" ON scooter_bookings FOR SELECT USING (true);
