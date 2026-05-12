@@ -11,10 +11,22 @@ import PassportScanner from '@/components/PassportScanner';
 const SignatureCanvas = dynamic(() => import('react-signature-canvas'), { ssr: false });
 const SigCanvas = SignatureCanvas as any;
 
-export default function CheckInPage({ params }: { params: Promise<{ hotel_id: string }> }) {
+export default function CheckInPage({ 
+  params,
+  searchParams 
+}: { 
+  params: Promise<{ hotel_id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
   const resolvedParams = use(params);
-  const hotel_id = resolvedParams.hotel_id;
+  const resolvedSearchParams = use(searchParams);
   
+  const hotel_id = resolvedParams.hotel_id;
+  const brandName = resolvedSearchParams.name || 'Vibra Hotels';
+  const brandLogo = resolvedSearchParams.logo || '/vibra-logo.svg';
+  const brandColorHex = resolvedSearchParams.color ? `#${resolvedSearchParams.color}` : '#00d2d3';
+  const brandHoverHex = brandColorHex;
+
   const [step, setStep] = useState(0); // 0=Lang, 1=Scan, 2=Form, 4=Success
   const [language, setLanguage] = useState<Language>('en');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,9 +49,9 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
 
   // Originele Turquoise/Lichtblauwe Kleur
   const theme = {
-    primary: 'bg-[#00d2d3]',
-    primaryHover: 'hover:bg-[#00b5b6]',
-    accent: 'text-[#00d2d3]',
+    primary: 'bg-[var(--brand-color)]',
+    primaryHover: 'hover:bg-[var(--brand-hover)]',
+    accent: 'text-[var(--brand-color)]',
   };
 
   const t = translations[language];
@@ -90,25 +102,35 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans text-[#00d2d3]">
+    <div 
+      style={{ 
+        '--brand-color': brandColorHex,
+        '--brand-hover': brandHoverHex
+      } as React.CSSProperties}
+      className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans text-[var(--brand-color)]"
+    >
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl overflow-hidden">
 
         {/* Header */}
         {step > 0 && (
           <div className={`${theme.primary} p-6 md:p-10 text-center text-white`}>
-            <img src="/vibra-logo.svg" alt="Vibra Hotels Logo" className="h-12 w-auto mx-auto brightness-0 invert" />
+            {brandLogo.endsWith('.svg') || brandLogo.includes('vibra') ? (
+              <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto brightness-0 invert object-contain" />
+            ) : (
+              <img src={brandLogo} alt={brandName} className="h-12 w-auto mx-auto object-contain rounded" />
+            )}
             <p className="mt-2 text-lg opacity-90">{t.header_subtitle}</p>
           </div>
         )}
 
         {/* Content Area */}
-        <div className={step === 0 ? "p-8 md:p-16 bg-gradient-to-br from-white via-cyan-50/30 to-white" : "p-6 md:p-10"}>
+        <div className={step === 0 ? "p-8 md:p-16 bg-gradient-to-br from-white to-gray-50" : "p-6 md:p-10"}>
 
           {step === 0 && (
             <div className="space-y-8 text-center animate-in fade-in zoom-in-95 duration-500">
               <div className="flex flex-col items-center justify-center space-y-4 mb-8">
-                <img src="/vibra-logo.svg" alt="Vibra Hotels Logo" className="h-20 w-auto mx-auto mb-2" />
-                <p className="text-xl text-[#00d2d3] font-medium opacity-80">Please select your language</p>
+                <img src={brandLogo} alt={brandName} className="h-20 w-auto mx-auto mb-2 object-contain" />
+                <p className="text-xl text-[var(--brand-color)] font-medium opacity-80">Please select your language</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -116,12 +138,12 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                   <button
                     key={lang.code}
                     onClick={() => selectLanguage(lang.code as Language)}
-                    className="flex items-center gap-5 p-4 w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,210,211,0.1)] hover:shadow-[0_8px_30px_rgb(0,210,211,0.3)] hover:-translate-y-1 transition-all duration-300 border border-[#00d2d3]/20 hover:border-[#00d2d3]/80 group"
+                    className="flex items-center gap-5 p-4 w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,210,211,0.1)] hover:shadow-[0_8px_30px_rgb(0,210,211,0.3)] hover:-translate-y-1 transition-all duration-300 border border-[var(--brand-color)]/20 hover:border-[var(--brand-color)]/80 group"
                   >
-                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-cyan-50 shadow-inner group-hover:bg-[#00d2d3] group-hover:text-white transition-all duration-300 flex-shrink-0 border border-[#00d2d3]/20">
+                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-cyan-50 shadow-inner group-hover:bg-[var(--brand-color)] group-hover:text-white transition-all duration-300 flex-shrink-0 border border-[var(--brand-color)]/20">
                       <span className="text-xl font-black">{lang.short}</span>
                     </div>
-                    <span className="text-xl font-bold text-[#00d2d3]">{lang.label}</span>
+                    <span className="text-xl font-bold text-[var(--brand-color)]">{lang.label}</span>
                   </button>
                 ))}
               </div>
@@ -130,8 +152,8 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
 
           {step === 1 && (
             <div className="space-y-6 text-center animate-in fade-in slide-in-from-right-4">
-              <h2 className="text-2xl font-semibold text-[#00d2d3]">{t.welcome_title}</h2>
-              <p className="text-[#00d2d3]/80">{t.welcome_subtitle}</p>
+              <h2 className="text-2xl font-semibold text-[var(--brand-color)]">{t.welcome_title}</h2>
+              <p className="text-[var(--brand-color)]/80">{t.welcome_subtitle}</p>
 
               <PassportScanner
                 t={t}
@@ -142,30 +164,30 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                 onCancel={() => setStep(2)}
               />
 
-              <p className="text-sm text-[#00d2d3]/60 mt-6 border-t border-[#00d2d3]/20 pt-4">{t.privacy_note}</p>
+              <p className="text-sm text-[var(--brand-color)]/60 mt-6 border-t border-[var(--brand-color)]/20 pt-4">{t.privacy_note}</p>
             </div>
           )}
 
           {step === 2 && (
             <form action={handleAction} className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <h2 className="text-2xl font-semibold text-[#00d2d3] border-b border-[#00d2d3]/20 pb-4">{t.personal_details}</h2>
+              <h2 className="text-2xl font-semibold text-[var(--brand-color)] border-b border-[var(--brand-color)]/20 pb-4">{t.personal_details}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.first_name}</label>
-                  <input type="text" name="firstName" defaultValue={scannedData.firstName} autoComplete="given-name" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.first_name}</label>
+                  <input type="text" name="firstName" defaultValue={scannedData.firstName} autoComplete="given-name" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.last_name}</label>
-                  <input type="text" name="lastName" defaultValue={scannedData.lastName} autoComplete="family-name" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.last_name}</label>
+                  <input type="text" name="lastName" defaultValue={scannedData.lastName} autoComplete="family-name" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.email}</label>
-                  <input type="email" name="email" autoComplete="email" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.email}</label>
+                  <input type="email" name="email" autoComplete="email" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.phone}</label>
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.phone}</label>
                   <div className="mt-1 flex rounded-lg shadow-sm">
-                    <select name="phoneCountryCode" className="rounded-l-lg border-[#00d2d3]/30 p-3 border-y border-l bg-gray-50 focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-700 w-1/3 max-w-[130px] text-sm">
+                    <select name="phoneCountryCode" className="rounded-l-lg border-[var(--brand-color)]/30 p-3 border-y border-l bg-gray-50 focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-700 w-1/3 max-w-[130px] text-sm">
                       <option value="+31">🇳🇱 +31</option>
                       <option value="+44">🇬🇧 +44</option>
                       <option value="+34">🇪🇸 +34</option>
@@ -178,33 +200,33 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                       <option value="+41">🇨🇭 +41</option>
                       <option value="+43">🇦🇹 +43</option>
                     </select>
-                    <input type="tel" name="phoneNumber" autoComplete="tel-national" required className="block w-full rounded-r-lg border-[#00d2d3]/30 p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                    <input type="tel" name="phoneNumber" autoComplete="tel-national" required className="block w-full rounded-r-lg border-[var(--brand-color)]/30 p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                   </div>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.street_address}</label>
-                  <input type="text" name="address" autoComplete="street-address" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.street_address}</label>
+                  <input type="text" name="address" autoComplete="street-address" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.zipcode}</label>
-                  <input type="text" name="zipcode" autoComplete="postal-code" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.zipcode}</label>
+                  <input type="text" name="zipcode" autoComplete="postal-code" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.city}</label>
-                  <input type="text" name="city" autoComplete="address-level2" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.city}</label>
+                  <input type="text" name="city" autoComplete="address-level2" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.country}</label>
-                  <input type="text" name="country" defaultValue={scannedData.country} autoComplete="country-name" required className="mt-1 block w-full rounded-lg border-[#00d2d3]/30 shadow-sm p-3 border focus:ring-[#00d2d3] focus:border-[#00d2d3] text-gray-800" />
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.country}</label>
+                  <input type="text" name="country" defaultValue={scannedData.country} autoComplete="country-name" required className="mt-1 block w-full rounded-lg border-[var(--brand-color)]/30 shadow-sm p-3 border focus:ring-[var(--brand-color)] focus:border-[var(--brand-color)] text-gray-800" />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#00d2d3]/20">
-                <h3 className="text-lg font-semibold text-[#00d2d3] mb-2">{t.upload_id_title}</h3>
-                <p className="text-sm text-[#00d2d3]/80 mb-4">{t.upload_id_desc}</p>
+              <div className="pt-4 border-t border-[var(--brand-color)]/20">
+                <h3 className="text-lg font-semibold text-[var(--brand-color)] mb-2">{t.upload_id_title}</h3>
+                <p className="text-sm text-[var(--brand-color)]/80 mb-4">{t.upload_id_desc}</p>
                 
                 {scannedData.idPhotoBase64 ? (
-                  <div className="relative w-full h-40 bg-cyan-50 rounded-lg overflow-hidden border-2 border-[#00d2d3]/40 flex items-center justify-center">
+                  <div className="relative w-full h-40 bg-cyan-50 rounded-lg overflow-hidden border-2 border-[var(--brand-color)]/40 flex items-center justify-center">
                     <img src={scannedData.idPhotoBase64} alt="ID Document" className="h-full object-contain" />
                     <button 
                       type="button" 
@@ -215,10 +237,10 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#00d2d3]/40 rounded-lg cursor-pointer bg-cyan-50/20 hover:bg-cyan-50/50 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[var(--brand-color)]/40 rounded-lg cursor-pointer bg-cyan-50/20 hover:bg-cyan-50/50 transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Camera className="w-8 h-8 mb-2 text-[#00d2d3]/60" />
-                      <p className="text-sm text-[#00d2d3]/80 font-medium">Klik of Tik om een foto toe te voegen</p>
+                      <Camera className="w-8 h-8 mb-2 text-[var(--brand-color)]/60" />
+                      <p className="text-sm text-[var(--brand-color)]/80 font-medium">Klik of Tik om een foto toe te voegen</p>
                     </div>
                     <input 
                       type="file" 
@@ -240,16 +262,16 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
                 )}
               </div>
 
-              <div className="pt-4 border-t border-[#00d2d3]/20">
+              <div className="pt-4 border-t border-[var(--brand-color)]/20">
                 <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-[#00d2d3]">{t.digital_signature}</label>
-                  <button type="button" onClick={clearSignature} className="text-xs text-[#00d2d3] flex items-center gap-1 hover:text-[#00b5b6] transition-colors">
+                  <label className="block text-sm font-medium text-[var(--brand-color)]">{t.digital_signature}</label>
+                  <button type="button" onClick={clearSignature} className="text-xs text-[var(--brand-color)] flex items-center gap-1 hover:text-[var(--brand-hover)] transition-colors">
                     <Eraser size={14} /> Wis / Clear
                   </button>
                 </div>
-                <div className="w-full h-48 border-2 border-dashed border-[#00d2d3]/40 rounded-lg overflow-hidden relative cursor-crosshair bg-cyan-50/20">
+                <div className="w-full h-48 border-2 border-dashed border-[var(--brand-color)]/40 rounded-lg overflow-hidden relative cursor-crosshair bg-cyan-50/20">
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-                    <p className="italic text-[#00d2d3]">{t.sign_here}</p>
+                    <p className="italic text-[var(--brand-color)]">{t.sign_here}</p>
                   </div>
                   <SigCanvas
                     ref={sigCanvas}
@@ -264,7 +286,7 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full ${theme.primary} ${theme.primaryHover} text-white py-4 rounded-xl text-xl font-medium transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''} shadow-lg shadow-[#00d2d3]/30`}
+                className={`w-full ${theme.primary} ${theme.primaryHover} text-white py-4 rounded-xl text-xl font-medium transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''} shadow-lg shadow-[var(--brand-color)]/30`}
               >
                 {isSubmitting ? t.processing : t.complete_checkin}
               </button>
@@ -273,16 +295,16 @@ export default function CheckInPage({ params }: { params: Promise<{ hotel_id: st
 
           {step === 4 && (
             <div className="text-center py-8 space-y-6 animate-in fade-in zoom-in duration-500">
-              <div className="mx-auto w-24 h-24 bg-cyan-50 rounded-full flex items-center justify-center border-4 border-[#00d2d3]/20">
-                <CheckCircle className="text-[#00d2d3]" size={56} />
+              <div className="mx-auto w-24 h-24 bg-cyan-50 rounded-full flex items-center justify-center border-4 border-[var(--brand-color)]/20">
+                <CheckCircle className="text-[var(--brand-color)]" size={56} />
               </div>
-              <h2 className="text-3xl font-bold text-[#00d2d3]">{t.checked_in_title}</h2>
+              <h2 className="text-3xl font-bold text-[var(--brand-color)]">{t.checked_in_title}</h2>
 
               {/* De Upsell Module */}
-              <div className="mt-8 p-6 bg-white border-2 border-[#00d2d3]/30 rounded-2xl shadow-[0_8px_30px_rgb(0,210,211,0.15)]">
+              <div className="mt-8 p-6 bg-white border-2 border-[var(--brand-color)]/30 rounded-2xl shadow-[0_8px_30px_rgb(0,210,211,0.15)]">
                 <h3 className={`text-xl font-bold ${theme.accent} mb-2`}>{t.upsell_title}</h3>
-                <p className="text-[#00d2d3]/80 mb-6">{t.upsell_desc}</p>
-                <button className={`w-full bg-[#00d2d3] text-white hover:bg-[#00b5b6] py-3 rounded-xl text-lg font-bold transition-all shadow-md`}>
+                <p className="text-[var(--brand-color)]/80 mb-6">{t.upsell_desc}</p>
+                <button className={`w-full bg-[var(--brand-color)] text-white hover:bg-[var(--brand-hover)] py-3 rounded-xl text-lg font-bold transition-all shadow-md`}>
                   {t.upsell_button}
                 </button>
               </div>
