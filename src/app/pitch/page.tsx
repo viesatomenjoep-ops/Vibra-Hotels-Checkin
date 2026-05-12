@@ -126,16 +126,26 @@ export default function PitchEditor() {
             <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
               <label className="block text-sm font-bold text-gray-700 mb-2">{t.pitch_select_prototype}</label>
               <select 
-                className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium"
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg outline-none font-medium mb-4"
                 onChange={(e) => {
-                  const selected = savedPrototypes.find(p => p.slug === e.target.value);
-                  if (selected) {
-                    setHotelName(selected.name || '');
-                    setHotelSlug(selected.slug || '');
-                    setColor(selected.primary_color || '#00d2d3');
-                    setFont(selected.font_family || 'Inter');
-                    setLogoBase64(selected.logo_url || '');
+                  const val = e.target.value;
+                  if (val === 'new') {
+                    setHotelName('');
+                    setHotelSlug('');
+                    setColor('#00d2d3');
+                    setFont('Inter');
+                    setLogoBase64('');
                     setSavedLink('');
+                  } else {
+                    const selected = savedPrototypes.find(p => p.slug === val);
+                    if (selected) {
+                      setHotelName(selected.name || '');
+                      setHotelSlug(selected.slug || '');
+                      setColor(selected.primary_color || '#00d2d3');
+                      setFont(selected.font_family || 'Inter');
+                      setLogoBase64(selected.logo_url || '');
+                      setSavedLink('');
+                    }
                   }
                 }}
               >
@@ -144,6 +154,22 @@ export default function PitchEditor() {
                   <option key={p.slug} value={p.slug}>{p.name} ({p.slug})</option>
                 ))}
               </select>
+              
+              <button 
+                onClick={() => {
+                  setHotelName('');
+                  setHotelSlug('');
+                  setColor('#00d2d3');
+                  setFont('Inter');
+                  setLogoBase64('');
+                  setSavedLink('');
+                  // Also reset the select dropdown visually if needed, but since it's uncontrolled we just rely on state.
+                  // Best would be to tie select value to a state, but this works to just reset form.
+                }}
+                className="w-full py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                {t.pitch_add_new}
+              </button>
             </div>
           )}
 
