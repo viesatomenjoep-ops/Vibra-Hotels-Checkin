@@ -76,13 +76,19 @@ export default function PitchEditor() {
     setIsSaving(false);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8 font-sans text-gray-800">
-      <div className="w-full max-w-2xl bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
-        <h1 className="text-3xl font-black mb-2 text-gray-900">Viesa Pitch Editor</h1>
-        <p className="text-gray-500 mb-8">Maak razendsnel een whitelabel prototype aan. Alles wordt écht opgeslagen in de database, inclusief eigen logo!</p>
+  const encodedFont = font.replace(/ /g, '+');
 
-        <div className="space-y-6">
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-gray-800">
+      <link href={`https://fonts.googleapis.com/css2?family=${encodedFont}:wght@400;500;600;700;800;900&display=swap`} rel="stylesheet" />
+      
+      <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start">
+        {/* Left Side: Editor Form */}
+        <div className="w-full xl:w-5/12 bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-gray-100 flex-shrink-0">
+          <h1 className="text-3xl font-black mb-2 text-gray-900">Viesa Pitch Editor</h1>
+          <p className="text-gray-500 mb-8">Live editor. Maak razendsnel een prototype aan inclusief database opslag.</p>
+
+          <div className="space-y-6">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">Hotel Naam</label>
             <input 
@@ -181,6 +187,93 @@ export default function PitchEditor() {
           </div>
         )}
       </div>
+
+      {/* Right Side: Live Viewer Preview */}
+      <div className="w-full xl:w-7/12 sticky top-8 space-y-8">
+        
+        {/* Kiosk Preview */}
+        <div 
+          className="w-full rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-gray-800 bg-white relative transition-all duration-300"
+          style={{ fontFamily: font }}
+        >
+          {/* Mock iPad Status bar */}
+          <div className="bg-black text-white text-[10px] font-bold px-6 py-1 flex justify-between items-center opacity-80">
+            <span>9:41 AM</span>
+            <div className="flex gap-2"><span>100%</span><span>🔋</span></div>
+          </div>
+          
+          <div className="flex flex-col md:flex-row min-h-[400px]">
+            {/* Kiosk Left */}
+            <div className="w-full md:w-1/2 p-10 flex flex-col justify-center" style={{ backgroundColor: color }}>
+              {logoBase64 ? (
+                <img src={logoBase64} alt="Logo" className="h-12 w-auto mb-10 object-contain brightness-0 invert" />
+              ) : (
+                <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
+              )}
+              <h2 className="text-4xl font-black text-white mb-4 leading-tight">Welcome to<br/>{hotelName}</h2>
+              <div className="w-full h-1 bg-white/20 rounded-full mb-8"></div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> Scan je ID</div>
+                <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> Check je data</div>
+              </div>
+            </div>
+            {/* Kiosk Right (QR Code mockup) */}
+            <div className="w-full md:w-1/2 bg-gray-50 p-10 flex flex-col items-center justify-center">
+              <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 transform transition-transform hover:scale-105 duration-300">
+                {/* Fake QR using CSS grid */}
+                <div className="w-40 h-40 grid grid-cols-4 grid-rows-4 gap-1 p-2" style={{ backgroundColor: color }}>
+                  {Array.from({length: 16}).map((_, i) => (
+                    <div key={i} className={`bg-white ${i%2===0 || i%3===0 ? 'opacity-100' : 'opacity-0'}`}></div>
+                  ))}
+                </div>
+              </div>
+              <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>SCAN HIER OM TE STARTEN</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile App Preview */}
+        <div className="flex justify-center">
+          <div 
+            className="w-[320px] h-[600px] rounded-[3rem] shadow-2xl border-[12px] border-gray-800 bg-gray-50 relative overflow-hidden flex flex-col"
+            style={{ fontFamily: font }}
+          >
+            {/* Dynamic iPhone Notch */}
+            <div className="absolute top-0 inset-x-0 h-6 bg-gray-800 rounded-b-3xl w-1/2 mx-auto z-10"></div>
+            
+            {/* Header */}
+            <div className="p-6 pt-10 text-center text-white" style={{ backgroundColor: color }}>
+              {logoBase64 ? (
+                <img src={logoBase64} alt="Logo" className="h-8 w-auto mx-auto object-contain brightness-0 invert" />
+              ) : (
+                <div className="h-8 w-20 bg-white/20 mx-auto rounded-md"></div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 p-6 space-y-6 overflow-hidden">
+              <h3 className="text-xl font-bold" style={{ color: color }}>Jouw gegevens</h3>
+              <div className="space-y-4">
+                <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-1/2 bg-gray-200 rounded"></div></div>
+                <div className="h-12 bg-white rounded-xl border border-gray-200 w-full flex items-center px-4"><span className="w-4 h-4 rounded-full bg-gray-200"></span><div className="ml-3 h-2 w-2/3 bg-gray-200 rounded"></div></div>
+                <div className="h-24 bg-white rounded-xl border-2 border-dashed border-gray-300 w-full flex items-center justify-center flex-col text-gray-400">
+                  <span className="text-2xl mb-1">📷</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">Paspoort Foto</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Button */}
+            <div className="p-6 bg-white border-t border-gray-100">
+              <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg" style={{ backgroundColor: color }}>
+                Voltooi Check-in
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
     </div>
   );
 }
