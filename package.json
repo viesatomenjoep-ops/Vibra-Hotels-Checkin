@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^9.5.0",
     "@supabase/supabase-js": "^2.105.4",
     "cloudinary": "^2.10.0",
     "lucide-react": "^1.14.0",
@@ -17,7 +18,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-qr-code": "^2.0.21",
-    "react-signature-canvas": "^1.1.0-alpha.2"
+    "react-signature-canvas": "^1.1.0-alpha.2",
+    "stripe": "^22.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

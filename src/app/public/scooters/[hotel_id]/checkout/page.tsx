@@ -76,16 +76,44 @@ export default function ScooterCheckoutPage({
           });
       }
       
-      setTimeout(() => {
-        setSuccess(true);
-        setIsSubmitting(false);
-      }, 1500); // Simulate network payment delay
+      // Create a checkout session using the central payment module
+      const res = await fetch('/api/payments/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyId: companyData?.id,
+          customerEmail: email,
+          items: [{
+            name: scooterName,
+            description: `Huurperiode: 2026-08-12 t/m 2026-08-19`,
+            price: totalAmount,
+            quantity: 1
+          }],
+          successUrl: `${window.location.origin}/public/scooters/${hotel_id}/checkout?success=true`,
+          cancelUrl: `${window.location.origin}/public/scooters/${hotel_id}/checkout?canceled=true`
+        })
+      });
+      
+      const session = await res.json();
+      if (session.url) {
+        window.location.href = session.url; // Redirect to Stripe
+      } else {
+        throw new Error(session.error || 'Betaalfout');
+      }
       
     } catch (err) {
       console.error(err);
       setIsSubmitting(false);
     }
   };
+
+  // Listen to URL for success
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success')) {
+      setSuccess(true);
+    }
+  }, []);
 
   if (success) {
     return (
@@ -223,7 +251,7 @@ export default function ScooterCheckoutPage({
               className="w-full py-5 text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all text-xl disabled:opacity-50" 
               style={{ backgroundColor: brandColor }}
             >
-              {isSubmitting ? 'Processing Payment...' : `Pay €${totalAmount} securely`}
+              {isSubmitting ? 'Doorverwijzen naar betaling...' : `Betaal €${totalAmount} via Stripe`}
             </button>
             <p className="text-center text-xs text-gray-400 mt-4 font-bold flex items-center justify-center gap-2">
               <span>🔒</span> Secured by Stripe
