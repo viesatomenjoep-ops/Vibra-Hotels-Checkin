@@ -2,6 +2,18 @@
 -- VIESA PLATFORM - MULTI-TENANT SaaS SCHEMA
 -- =========================================================================
 
+-- 0. CLEANUP (Voorkomt 'already exists' errors)
+DROP TABLE IF EXISTS platform_subscriptions CASCADE;
+DROP TABLE IF EXISTS rental_bookings CASCADE;
+DROP TABLE IF EXISTS rental_assets CASCADE;
+DROP TABLE IF EXISTS hotel_checkins CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS user_profiles CASCADE;
+DROP TABLE IF EXISTS companies CASCADE;
+
+DROP TYPE IF EXISTS branch_category_enum CASCADE;
+DROP TYPE IF EXISTS subscription_status_enum CASCADE;
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. ENUMS (Voor stricte data controle)
