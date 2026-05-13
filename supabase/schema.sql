@@ -136,6 +136,15 @@ ALTER TABLE rental_assets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rental_bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE platform_subscriptions ENABLE ROW LEVEL SECURITY;
 
+-- Crucial: Users must be able to read their own profile to know their company_id!
+CREATE POLICY "Users can read own profile" 
+  ON user_profiles FOR SELECT 
+  USING (id = auth.uid());
+
+CREATE POLICY "Users can update own profile" 
+  ON user_profiles FOR UPDATE 
+  USING (id = auth.uid());
+
 -- Regels: Een geauthenticeerde user mag ALLEEN data zien/wijzigen van zijn eigen company_id
 CREATE POLICY "Tenant Isolation: Access own company" 
   ON companies FOR ALL 

@@ -15,11 +15,32 @@ export default function OnboardingPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated
+    // Check if user is authenticated and already has a company
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push("/login");
+        return;
+      }
+      
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("company_id")
+        .eq("id", session.user.id)
+        .single();
+        
+      if (profile && profile.company_id) {
+        const { data: company } = await supabase
+          .from("companies")
+          .select("branch_category")
+          .eq("id", profile.company_id)
+          .single();
+          
+        if (company) {
+          if (company.branch_category === "hotel") router.push("/dashboard/hotel");
+          else if (company.branch_category === "rental") router.push("/dashboard/rental");
+          else if (company.branch_category === "beachbeds") router.push("/dashboard/beachbeds");
+        }
       }
     };
     checkAuth();
