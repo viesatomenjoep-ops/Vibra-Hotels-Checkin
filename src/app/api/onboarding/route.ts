@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     // If there is an error (e.g. relation does not exist because DB schema isn't applied yet, we gracefully return it)
     if (companyError) {
       console.error("Error creating company:", companyError);
-      return NextResponse.json({ error: 'Fout bij aanmaken bedrijf' }, { status: 500 });
+      return NextResponse.json({ error: `DB Error (Company): ${companyError.message}` }, { status: 500 });
     }
 
     // 2. Create the User Profile linking the user to the company
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
     if (profileError) {
       console.error("Error creating profile:", profileError);
-      return NextResponse.json({ error: 'Fout bij aanmaken profiel' }, { status: 500 });
+      return NextResponse.json({ error: `DB Error (Profile): ${profileError.message}` }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, companyId: newCompany.id });
