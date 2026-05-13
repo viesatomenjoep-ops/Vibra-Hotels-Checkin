@@ -88,6 +88,7 @@ export default function DashboardShell({
         { label: "Dashboard", href: "/dashboard/hotel", icon: <Home size={20} /> },
         { label: "Gasten", href: "/dashboard/hotel/guests", icon: <Users size={20} /> },
         { label: "Check-ins", href: "/dashboard/hotel/list", icon: <Building2 size={20} /> },
+        { label: "Check-in App", href: "/dashboard/hotel/configurator", icon: <Settings size={20} /> },
       ];
     }
     if (company.branch_category === "rental") {
