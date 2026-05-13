@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -64,8 +66,8 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">Welkom terug</h1>
-        <p className="text-slate-500 mt-2 text-sm">Log in op je Viesa account</p>
+        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">{t("login_title")}</h1>
+        <p className="text-slate-500 mt-2 text-sm">{t("login_subtitle")}</p>
       </div>
 
       {error && (
@@ -77,7 +79,7 @@ export default function LoginPage() {
       <form onSubmit={handleLogin} className="space-y-5">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Emailadres
+            {t("email_label")}
           </label>
           <input
             type="email"
@@ -91,7 +93,7 @@ export default function LoginPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Wachtwoord
+            {t("password_label")}
           </label>
           <input
             type="password"
@@ -108,14 +110,14 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-[#4A90E2] hover:bg-[#3A7BC8] text-white font-medium py-3 rounded-xl transition-colors mt-2 disabled:opacity-70"
         >
-          {loading ? "Bezig met inloggen..." : "Inloggen"}
+          {loading ? t("login_loading") : t("login_button")}
         </button>
       </form>
 
       <div className="mt-8 text-center text-sm text-slate-500">
-        Nog geen account?{" "}
+        {t("no_account")}{" "}
         <Link href="/register" className="text-[#4A90E2] font-medium hover:underline">
-          Maak een account aan
+          {t("create_account")}
         </Link>
       </div>
     </div>

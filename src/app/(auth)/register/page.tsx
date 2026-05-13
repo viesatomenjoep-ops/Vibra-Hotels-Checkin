@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,8 +51,8 @@ export default function RegisterPage() {
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">Maak een account</h1>
-        <p className="text-slate-500 mt-2 text-sm">Start vandaag met Viesa</p>
+        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">{t("register_title")}</h1>
+        <p className="text-slate-500 mt-2 text-sm">{t("register_subtitle")}</p>
       </div>
 
       {error && (
@@ -62,7 +64,7 @@ export default function RegisterPage() {
       <form onSubmit={handleRegister} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Volledige naam
+            {t("full_name_label")}
           </label>
           <input
             type="text"
@@ -76,7 +78,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Emailadres
+            {t("email_label")}
           </label>
           <input
             type="email"
@@ -90,7 +92,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Wachtwoord
+            {t("password_label")}
           </label>
           <input
             type="password"
@@ -105,14 +107,14 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Promotiecode (Optioneel)
+            {t("promo_code_label")}
           </label>
           <input
             type="text"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value)}
             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#EADBB6] focus:border-transparent transition-all bg-[#FDFCF9]"
-            placeholder="Bijv. SUMMER26"
+            placeholder={t("promo_code_placeholder")}
           />
         </div>
 
@@ -121,14 +123,14 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full bg-[#4A90E2] hover:bg-[#3A7BC8] text-white font-medium py-3 rounded-xl transition-colors mt-4 disabled:opacity-70"
         >
-          {loading ? "Bezig met aanmaken..." : "Aanmelden"}
+          {loading ? t("register_loading") : t("register_button")}
         </button>
       </form>
 
       <div className="mt-8 text-center text-sm text-slate-500">
-        Heb je al een account?{" "}
+        {t("already_account")}{" "}
         <Link href="/login" className="text-[#4A90E2] font-medium hover:underline">
-          Inloggen
+          {t("login_link")}
         </Link>
       </div>
     </div>

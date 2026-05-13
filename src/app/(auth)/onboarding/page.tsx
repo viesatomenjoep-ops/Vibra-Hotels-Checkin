@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { Building2, Bike, Umbrella } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function OnboardingPage() {
+  const { t } = useLanguage();
   const [companyName, setCompanyName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<"hotel" | "rental" | "beachbeds" | null>(null);
   const [loading, setLoading] = useState(false);
@@ -73,8 +75,8 @@ export default function OnboardingPage() {
   return (
     <div className="w-full max-w-2xl bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-12">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">Welkom bij Viesa</h1>
-        <p className="text-slate-500 mt-2">Laten we je account instellen. Welke branche ben je actief in?</p>
+        <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">{t("onboarding_title")}</h1>
+        <p className="text-slate-500 mt-2">{t("onboarding_subtitle")}</p>
       </div>
 
       {error && (
@@ -85,7 +87,7 @@ export default function OnboardingPage() {
 
       <div className="mb-8">
         <label className="block text-sm font-medium text-slate-700 mb-2">
-          Naam van je bedrijf
+          {t("company_name_label")}
         </label>
         <input
           type="text"
@@ -93,7 +95,7 @@ export default function OnboardingPage() {
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-transparent transition-all bg-[#FDFCF9] text-lg"
-          placeholder="Bijv. Ibiza Sunset Hotel"
+          placeholder={t("company_name_placeholder")}
         />
       </div>
 
@@ -108,7 +110,7 @@ export default function OnboardingPage() {
           }`}
         >
           <Building2 size={36} className="mb-3" />
-          <span className="font-medium">Hotel Check-in</span>
+          <span className="font-medium">{t("branch_hotel")}</span>
         </button>
 
         {/* Rental Option */}
@@ -121,7 +123,7 @@ export default function OnboardingPage() {
           }`}
         >
           <Bike size={36} className="mb-3" />
-          <span className="font-medium">Verhuurbedrijf</span>
+          <span className="font-medium">{t("branch_rental")}</span>
         </button>
 
         {/* Beachbeds Option */}
@@ -134,7 +136,7 @@ export default function OnboardingPage() {
           }`}
         >
           <Umbrella size={36} className="mb-3" />
-          <span className="font-medium">Strandbedden</span>
+          <span className="font-medium">{t("branch_beachbeds")}</span>
         </button>
       </div>
 
@@ -143,7 +145,7 @@ export default function OnboardingPage() {
         disabled={loading || !selectedCategory || !companyName}
         className="w-full bg-[#4A90E2] hover:bg-[#3A7BC8] text-white font-medium py-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Bezig met instellen..." : "Afronden en naar Dashboard"}
+        {loading ? t("register_loading") : t("complete_setup")}
       </button>
     </div>
   );

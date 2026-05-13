@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Dynamic Digital Check-in platform by Viesa",
 };
 
+import { LanguageProvider } from "@/contexts/LanguageContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,11 @@ export default function RootLayout({
       lang="en"
       className={`${montserrat.variable} font-sans h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }
