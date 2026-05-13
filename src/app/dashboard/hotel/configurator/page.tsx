@@ -179,24 +179,38 @@ export default function ConfiguratorPage() {
             <button 
               onClick={handleSave}
               disabled={saving}
-              className="w-full py-4 text-white rounded-xl font-bold text-lg transition-colors shadow-md"
+              className={`w-full py-4 text-white rounded-xl font-bold text-lg transition-colors shadow-md ${saving ? 'opacity-50' : ''}`}
               style={{ backgroundColor: color }}
             >
               {saving ? "Bezig met opslaan..." : "Wijzigingen Opslaan"}
             </button>
             
             {successMsg && (
-              <div className="p-4 bg-green-50 text-green-700 rounded-xl border border-green-200 text-sm font-medium">
-                {successMsg}
+              <div className="mt-8 p-6 bg-green-50 rounded-2xl border-2 border-green-200 animate-in fade-in slide-in-from-bottom-4">
+                <p className="text-sm font-bold text-green-700 mb-4 uppercase tracking-wider">{successMsg}</p>
+                <div className="flex gap-2 mb-3">
+                  <a 
+                    href={`/kiosk/${companySlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 block text-center py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-md"
+                  >
+                    Open Prototype 🚀
+                  </a>
+                </div>
+                
+                <button 
+                  onClick={() => {
+                    const url = `${window.location.origin}/kiosk/${companySlug}`;
+                    navigator.clipboard.writeText(url);
+                    alert("Link gekopieerd!");
+                  }}
+                  className="block w-full text-center py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-md"
+                >
+                  Kopieer Check-in Link
+                </button>
               </div>
             )}
-
-            <div className="mt-8 pt-6 border-t border-slate-100">
-              <p className="text-sm text-slate-500 mb-3">Live Check-in Link voor gasten:</p>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 font-mono text-xs overflow-hidden text-ellipsis whitespace-nowrap">
-                {typeof window !== 'undefined' ? `${window.location.origin}/kiosk/${companySlug}` : ''}
-              </div>
-            </div>
           </div>
         </div>
 

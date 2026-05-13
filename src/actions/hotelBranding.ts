@@ -84,28 +84,9 @@ export async function getHotelBranding(slug: string) {
   try {
     const supabase = getSupabaseClient();
     
-    // Check scooter_companies first
-    const { data: scooterData, error: scooterError } = await supabase
-      .from('scooter_companies')
-      .select('name, primary_color, logo_url, font_family, scooter_fleet')
-      .eq('slug', slug)
-      .single();
-      
-    if (!scooterError && scooterData) {
-      return {
-        name: scooterData.name,
-        color: scooterData.primary_color,
-        logo: scooterData.logo_url,
-        font: scooterData.font_family,
-        business_type: 'scooter',
-        scooter_fleet: scooterData.scooter_fleet || []
-      };
-    }
-
-    // Fallback to hotels
     const { data, error } = await supabase
-      .from('hotels')
-      .select('name, primary_color, logo_url, font_family')
+      .from('companies')
+      .select('name, primary_color, logo_url, font_family, branch_category')
       .eq('slug', slug)
       .single();
       
@@ -118,7 +99,7 @@ export async function getHotelBranding(slug: string) {
       color: data.primary_color,
       logo: data.logo_url,
       font: data.font_family,
-      business_type: 'hotel',
+      business_type: data.branch_category === 'rental' ? 'scooter' : 'hotel',
       scooter_fleet: []
     };
   } catch (e) {
