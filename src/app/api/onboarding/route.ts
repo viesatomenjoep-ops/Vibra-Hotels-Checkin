@@ -35,10 +35,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `DB Error (Company): ${companyError.message}` }, { status: 500 });
     }
 
-    // 2. Create the User Profile linking the user to the company
+    // 2. Create or Update the User Profile linking the user to the company
     const { error: profileError } = await adminSupabase
       .from('user_profiles')
-      .insert({
+      .upsert({
         id: userId,
         company_id: newCompany.id,
         full_name: userFullName,
