@@ -16,7 +16,8 @@ export async function POST(req: Request) {
     const adminSupabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // 1. Create the Company (Tenant)
-    const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const baseSlug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const slug = `${baseSlug}-${Math.random().toString(36).substring(2, 6)}`;
     
     const { data: newCompany, error: companyError } = await adminSupabase
       .from('companies')
