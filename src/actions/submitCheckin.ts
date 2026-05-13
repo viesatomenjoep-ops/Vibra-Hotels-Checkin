@@ -31,32 +31,19 @@ export async function processCheckin(formData: FormData) {
   try {
     const supabase = getSupabaseClient();
     
-    // 1. Zoek of Maak het Hotel (fallback als slug id is) van de slug ('vibra-algarb')
-    let actualHotelId = '';
-    const { data: existingHotel } = await supabase
-      .from('hotels')
+    // 1. Zoek het Bedrijf op basis van de slug
+    const { data: existingCompany } = await supabase
+      .from('companies')
       .select('id')
       .eq('slug', hotelId)
       .single();
 
-    if (existingHotel) {
-      actualHotelId = existingHotel.id;
-    } else {
-      // Hotel bestaat nog niet in de nieuwe DB, maak hem direct aan!
-      const { data: newHotel, error: newHotelError } = await supabase
-        .from('hotels')
-        .insert([{ 
-          name: hotelId.replace('-', ' ').toUpperCase(), 
-          slug: hotelId 
-        }])
-        .select('id')
-        .single();
-        
-      if (newHotelError) throw newHotelError;
-      actualHotelId = newHotel.id;
+    if (!existingCompany) {
+      throw new Error(`Geen actief bedrijf gevonden voor de opgegeven link (${hotelId}).`);
     }
+    const actualHotelId = existingCompany.id;
 
-    // 2. Upload handtekening en evt paspoortfoto parallel naar Cloudinary (voorkomt Vercel 10s timeout)
+    // 2. Upload handtekening en evt paspoortfoto parallel naar Cloudinary
     const uploadTasks: Promise<string>[] = [uploadSignature(base64Signature, actualHotelId)];
     if (idPhotoBase64) {
       uploadTasks.push(uploadIdPhoto(idPhotoBase64, actualHotelId));
@@ -66,10 +53,11 @@ export async function processCheckin(formData: FormData) {
     const signatureUrl = uploadResults[0];
     const idPhotoUrl = idPhotoBase64 ? uploadResults[1] : null;
 
-    // 3. Maak Gast aan in Supabase
+    // 3. Maak Gast aan in Supabase Customers tabel (SaaS scope)
     const { data: guestData, error: guestError } = await supabase
-      .from('guests')
+      .from('customers')
       .insert([{ 
+        company_id: actualHotelId,
         first_name: firstName, 
         last_name: lastName,
         email,
@@ -77,21 +65,21 @@ export async function processCheckin(formData: FormData) {
         address,
         city,
         zipcode,
-        country
+        country,
+        id_photo_url: idPhotoUrl
       }])
       .select('id')
       .single();
 
     if (guestError) throw guestError;
 
-    // 4. Koppel de checkin aan het ECHTE hotel UUID
+    // 4. Koppel de checkin in hotel_checkins
     const { error: checkinError } = await supabase
-      .from('checkins')
+      .from('hotel_checkins')
       .insert([{
-        hotel_id: actualHotelId,
-        guest_id: guestData.id,
+        company_id: actualHotelId,
+        customer_id: guestData.id,
         signature_url: signatureUrl,
-        id_photo_url: idPhotoUrl,
         status: 'completed'
       }]);
 

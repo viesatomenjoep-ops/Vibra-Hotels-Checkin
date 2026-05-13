@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import DashboardShell from "@/components/DashboardShell";
 import { supabase } from "@/lib/supabase";
+import { saveTenantBranding } from "@/actions/saveTenantBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ConfiguratorPage() {
@@ -14,7 +15,8 @@ export default function ConfiguratorPage() {
   
   const [color, setColor] = useState("#4A90E2");
   const [font, setFont] = useState("Inter");
-  const [logoUrl, setLogoUrl] = useState("");
+  const [logoBase64, setLogoBase64] = useState("");
+  const [logoFileName, setLogoFileName] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function ConfiguratorPage() {
           setCompanySlug(comp.slug);
           if (comp.primary_color) setColor(comp.primary_color);
           if (comp.font_family) setFont(comp.font_family);
-          if (comp.logo_url) setLogoUrl(comp.logo_url);
+          if (comp.logo_url) setLogoBase64(comp.logo_url);
         }
       }
       setLoading(false);
@@ -48,26 +50,56 @@ export default function ConfiguratorPage() {
     fetchCompanyData();
   }, []);
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 800;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          setLogoBase64(canvas.toDataURL('image/png', 0.8));
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setSuccessMsg("");
     
-    // In a real app we'd also upload base64 to storage, but here we just accept a URL or assume it was done.
-    const { error } = await supabase
-      .from("companies")
-      .update({
-        primary_color: color,
-        font_family: font,
-        logo_url: logoUrl
-      })
-      .eq("id", companyId);
+    const formData = new FormData();
+    formData.append("companyId", companyId);
+    formData.append("slug", companySlug);
+    formData.append("color", color);
+    formData.append("font_family", font);
+    formData.append("logoBase64", logoBase64);
+
+    const result = await saveTenantBranding(formData);
 
     setSaving(false);
-    if (!error) {
+    if (result.success) {
       setSuccessMsg("Gepersonaliseerde Check-in succesvol opgeslagen!");
       setTimeout(() => setSuccessMsg(""), 3000);
     } else {
-      alert("Fout bij opslaan: " + error.message);
+      alert("Fout bij opslaan: " + result.message);
     }
   };
 
@@ -120,14 +152,28 @@ export default function ConfiguratorPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Logo URL</label>
-              <input 
-                type="text" 
-                value={logoUrl} 
-                onChange={(e) => setLogoUrl(e.target.value)}
-                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#4A90E2] outline-none"
-                placeholder="https://jouw-website.nl/logo.png"
-              />
+              <label className="block text-sm font-bold text-slate-700 mb-2">Upload Logo (Automatische Cloudinary Sync)</label>
+              <div className="flex flex-col gap-4">
+                <label className="w-full flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                  <div className="text-white px-4 py-2 rounded-lg font-medium text-sm" style={{ backgroundColor: color }}>
+                    Kies Bestand
+                  </div>
+                  <span className="text-slate-500 text-sm truncate flex-1">
+                    {logoFileName || 'Geen bestand gekozen'}
+                  </span>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                </label>
+                {logoBase64 && (
+                  <div className="p-4 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-slate-50 h-32">
+                    <img src={logoBase64} alt="Preview" className="max-h-full object-contain" />
+                  </div>
+                )}
+              </div>
             </div>
 
             <button 
@@ -154,49 +200,45 @@ export default function ConfiguratorPage() {
           </div>
         </div>
 
-        {/* Live Preview (Mobile App Simulation) */}
-        <div className="w-full xl:w-7/12 flex justify-center sticky top-8">
+        {/* Exact Match of Pitch Preview */}
+        <div className="w-full xl:w-7/12 sticky top-8 space-y-8">
           <div 
-            className="w-[320px] h-[640px] rounded-[3rem] shadow-2xl border-[12px] border-slate-800 bg-[#FDFCF9] relative overflow-hidden flex flex-col"
+            className="w-full rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-gray-800 bg-white relative transition-all duration-300"
             style={{ fontFamily: font }}
           >
-            {/* Dynamic iPhone Notch */}
-            <div className="absolute top-0 inset-x-0 h-6 bg-slate-800 rounded-b-3xl w-1/2 mx-auto z-10"></div>
-            
-            {/* Header */}
-            <div className="p-6 pt-12 text-center text-white" style={{ backgroundColor: color }}>
-              {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="h-10 w-auto mx-auto object-contain mb-2 bg-white/20 p-2 rounded-lg" />
-              ) : (
-                <div className="h-10 w-24 bg-white/20 mx-auto rounded-lg mb-2 flex items-center justify-center font-bold">Jouw Logo</div>
-              )}
-              <p className="text-sm opacity-90 mt-2">Viesa Check-in</p>
+            {/* Mock iPad Status bar */}
+            <div className="bg-black text-white text-[10px] font-bold px-6 py-1 flex justify-between items-center opacity-80">
+              <span>9:41 AM</span>
+              <div className="flex gap-2"><span>100%</span><span>🔋</span></div>
             </div>
-
-            {/* Content */}
-            <div className="flex-1 p-6 space-y-6 overflow-hidden">
-              <h3 className="text-xl font-bold" style={{ color: color }}>Persoonlijke Gegevens</h3>
-              <div className="space-y-4">
-                <div className="h-14 bg-white rounded-xl border border-slate-200 w-full flex items-center px-4 shadow-sm">
-                  <span className="w-5 h-5 rounded-full bg-slate-200"></span>
-                  <div className="ml-3 h-2 w-1/2 bg-slate-200 rounded"></div>
-                </div>
-                <div className="h-14 bg-white rounded-xl border border-slate-200 w-full flex items-center px-4 shadow-sm">
-                  <span className="w-5 h-5 rounded-full bg-slate-200"></span>
-                  <div className="ml-3 h-2 w-2/3 bg-slate-200 rounded"></div>
-                </div>
-                <div className="h-28 bg-white rounded-xl border-2 border-dashed border-slate-300 w-full flex items-center justify-center flex-col text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer">
-                  <span className="text-3xl mb-2">📷</span>
-                  <span className="text-xs font-bold uppercase tracking-wider">Upload Paspoort</span>
+            
+            <div className="flex flex-col md:flex-row min-h-[400px]">
+              {/* Kiosk Left */}
+              <div className="w-full md:w-1/2 p-10 flex flex-col justify-center" style={{ backgroundColor: color }}>
+                {logoBase64 ? (
+                  <img src={logoBase64} alt="Logo" className={`h-12 w-auto mb-10 object-contain ${(logoBase64.endsWith('.svg') || logoBase64.includes('vibra')) ? 'brightness-0 invert' : ''}`} />
+                ) : (
+                  <div className="h-12 w-32 bg-white/20 rounded-lg mb-10"></div>
+                )}
+                <p className="mt-2 text-lg text-white opacity-90">Start Digital Check-in</p>
+                <div className="w-full h-1 bg-white/20 rounded-full my-6"></div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">1</div> Scan your ID Document</div>
+                  <div className="flex items-center gap-4 text-white opacity-90"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">2</div> Confirm Personal Details</div>
                 </div>
               </div>
-            </div>
-
-            {/* Button */}
-            <div className="p-6 bg-white border-t border-slate-100">
-              <button className="w-full py-4 text-white font-bold rounded-xl shadow-lg transition-transform hover:scale-[1.02]" style={{ backgroundColor: color }}>
-                Voltooi Check-in
-              </button>
+              {/* Kiosk Right (QR Code mockup) */}
+              <div className="w-full md:w-1/2 bg-gray-50 p-10 flex flex-col items-center justify-center">
+                <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 transform transition-transform hover:scale-105 duration-300">
+                  {/* Fake QR using CSS grid */}
+                  <div className="w-40 h-40 grid grid-cols-4 grid-rows-4 gap-1 p-2" style={{ backgroundColor: color }}>
+                    {Array.from({length: 16}).map((_, i) => (
+                      <div key={i} className={`bg-white ${i%2===0 || i%3===0 ? 'opacity-100' : 'opacity-0'}`}></div>
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-6 font-bold tracking-widest uppercase text-sm opacity-80" style={{ color: color }}>SCAN HERE TO START</p>
+              </div>
             </div>
           </div>
         </div>
